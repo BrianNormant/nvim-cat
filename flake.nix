@@ -35,6 +35,9 @@
 				builtin = with pkgs.vimPlugins; [
 					oil-nvim
 				];
+				git = with pkgs.vimPlugins; [
+					vim-fugitive
+				];
 			};
 			lspsAndRuntimeDeps = {};
 			optionalPlugins = {};
@@ -50,6 +53,7 @@
 				categories = {
 					gruvbox = true;
 					builtin = true;
+					git = true;
 				};
 			};
 		};
