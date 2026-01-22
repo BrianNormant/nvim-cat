@@ -11,6 +11,7 @@
 		neovim-nightly-overlay = {
 			url = "github:nix-community/neovim-nightly-overlay";
 		};
+		nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
 	};
 
 # devrait remplacer nixvim simple et nixvim normal
@@ -23,7 +24,10 @@
 		system = "x86_64-linux";
 		pkgs = import nixpkgs {
 			inherit system;
-			overlays = [inputs.neovim-nightly-overlay.overlays.default];
+			overlays = [
+				inputs.neovim-nightly-overlay.overlays.default
+				inputs.nix-vscode-extensions.overlays.default
+			];
 		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
@@ -35,11 +39,21 @@
 				builtin = with pkgs.vimPlugins; [
 					oil-nvim
 				];
+				lsp = with pkgs.vimPlugins; [
+					nvim-lspconfig
+				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
 				];
 			};
-			lspsAndRuntimeDeps = {};
+			lspsAndRuntimeDeps = {
+				lua = with pkgs; [
+					lua-language-server
+					open-vsx.tomblind.local-lua-debugger-vscode
+					stylua
+					luajitPackages.luacheck
+				];
+			};
 			optionalPlugins = {};
 			environmentVariables = {};
 		};
@@ -53,6 +67,8 @@
 				categories = {
 					gruvbox = true;
 					builtin = true;
+					lsp = true;
+					lua = true;
 					git = true;
 				};
 			};
