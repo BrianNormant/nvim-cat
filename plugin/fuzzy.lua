@@ -1,0 +1,11 @@
+-- A decent fuzzy finder is essential.
+-- The option are:
+-- telescope
+-- + Snappy and open fast
+-- + Good ecosystem
+-- - Laggy on big project
+-- + Easy to extend
+-- fzf-lua
+-- + Ultra fast
+-- + Fzf
+-- - Slight delay when starting
