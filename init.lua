@@ -9,6 +9,9 @@ end
 vim.g.mapleader = " "
 
 if vim.env.NIXCAT_DEBUG then
-	-- We are restarting nvim with :restart
-	vim.cmd [[source ./Session.vim]]
+	vim.api.nvim_create_user_command(
+		"RE",
+		"mks! | restart source Session.vim",
+		{}
+	)
 end
