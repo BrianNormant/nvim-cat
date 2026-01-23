@@ -22,11 +22,21 @@
 
 	outputs = { self, nixpkgs, ... }@inputs: let
 		system = "x86_64-linux";
+		melangeOverlay = (next: prev: {
+			vimPlugins = prev.vimPlugins.extend (f': p': {
+				melange-nvim = p'.melange-nvim.overrideAttrs {
+					patches = [
+						./patch/melange-nvim.patch
+					];
+				};
+			});
+		});
 		pkgs = import nixpkgs {
 			inherit system;
 			overlays = [
 				inputs.neovim-nightly-overlay.overlays.default
 				inputs.nix-vscode-extensions.overlays.default
+				melangeOverlay
 			];
 		};
 		inherit (inputs.nixCats) utils;

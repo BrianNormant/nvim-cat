@@ -1,0 +1,13 @@
+diff --git a/lua/melange/palettes/dark.lua b/lua/melange/palettes/dark.lua
+index 7d5c8bb..ce27fb4 100644
+--- a/lua/melange/palettes/dark.lua
++++ b/lua/melange/palettes/dark.lua
+@@ -1,7 +1,7 @@
+ -- stylua: ignore
+ return {
+   a = {
+-    bg      = "#292522",
++	bg      = "#32302F",
+     float   = "#34302C",
+     sel     = "#403A36",
+     ui      = "#867462",
