@@ -51,12 +51,16 @@
 				];
 				builtin = with pkgs.vimPlugins; [
 					oil-nvim
+					mini-nvim
 				];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
 				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
+				];
+				lua = with pkgs.vimPlugins; [
+					lazydev-nvim
 				];
 			};
 			lspsAndRuntimeDeps = {
@@ -65,6 +69,9 @@
 					open-vsx.tomblind.local-lua-debugger-vscode
 					stylua
 					luajitPackages.luacheck
+				];
+				nix = with pkgs; [
+					nixd
 				];
 			};
 			optionalPlugins = {};
@@ -76,6 +83,8 @@
 				settings = {
 					wrapRc = "NIXCAT_DEBUG";
 					configDirName = "nvim-cat";
+					suffix-path = true;
+					suffix-LD = true;
 				};
 				categories = {
 					melange = true;
@@ -83,6 +92,7 @@
 					lsp = true;
 					lua = true;
 					git = true;
+					nix = true;
 				};
 			};
 		};
