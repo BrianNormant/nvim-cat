@@ -6,6 +6,10 @@ if nixCats('gruvbox') then
 	vim.cmd [[colorscheme gruvbox-material]]
 end
 
+if nixCats('melange') then
+	vim.cmd [[colorscheme melange]]
+end
+
 vim.g.mapleader = " "
 
 if vim.env.NIXCAT_DEBUG then

@@ -36,6 +36,9 @@
 				gruvbox = with pkgs.vimPlugins; [
 					gruvbox-material-nvim
 				];
+				melange = with pkgs.vimPlugins; [
+					melange-nvim
+				];
 				builtin = with pkgs.vimPlugins; [
 					oil-nvim
 				];
@@ -65,7 +68,7 @@
 					configDirName = "nvim-cat";
 				};
 				categories = {
-					gruvbox = true;
+					melange = true;
 					builtin = true;
 					lsp = true;
 					lua = true;
