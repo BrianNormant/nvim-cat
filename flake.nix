@@ -118,7 +118,8 @@
 			};
 		};
 
-		packagesDefinitions = {
+		packagesDefinitions = rec {
+			nvim = nvim-cat;
 			nvim-cat = {pkgs, ...}: {
 				settings = {
 					wrapRc = "NIXCAT_DEBUG";
@@ -139,9 +140,9 @@
 			};
 		};
 	in {
-		packages."${system}" = rec {
+		packages."${system}" = {
 			nvim-cat = utils.baseBuilder luaPath {inherit pkgs;} categoryDefinitions packagesDefinitions "nvim-cat";
-			nvim = nvim-cat;
+			nvim = utils.baseBuilder luaPath {inherit pkgs;} categoryDefinitions packagesDefinitions "nvim";
 		};
 	};
 }
