@@ -5,7 +5,7 @@ do
 		lsp_completion = {
 			source_func = "omnifunc",
 		},
-		delay = { completion = 10^7 },
+		delay = { completion = 10^7, signature = 10^7 },
 		window = {
 			info = { border = "none" },
 			signature = { border = "none" },

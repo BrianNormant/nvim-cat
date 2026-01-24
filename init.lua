@@ -9,10 +9,10 @@ vim.api.nvim_create_autocmd(
 			highlight clear SpellBad
 			highlight clear SpellLocal
 			highlight clear SpellRare
-			highlight! link Search PmenuSel
-			highlight! link IncSearch PmenuSel
-			highlight! link CurSearch FloatShadow
-			highlight Substitute guibg=#545454
+			" highlight! link Search PmenuSel
+			" highlight! link IncSearch PmenuSel
+			" highlight! link CurSearch FloatShadow
+			" highlight Substitute guibg=#545454
 			]]
 		end
 	}
@@ -144,6 +144,7 @@ require('mini.align').setup {}
 require('mini.operators').setup {
 	replace = { prefix = "sp", },
 }
+
 require('mini.comment').setup()
 require('mini.surround').setup({
 	mappings = {
@@ -296,7 +297,7 @@ if nixCats('git') then
 	vim.keymap.set("n", "<leader>hg", function() FzfLua.git_bcommits {
 		actions = { ["enter"] = function(sel) signs.diffthis(sel[2]) end },
 	}end)
-	-- require('codediff').setup {}
+	require('codediff').setup {}
 	-- require('gitgraph').setup {}
 end
 
@@ -309,12 +310,15 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	MiniIcons.mock_nvim_web_devicons()
 	require('lspkind').init {}
 
-	-- require('lsp_signature').setup {
-	-- 	hint_prefix = {
-	-- 		hint_prefix = {
-	-- 			above = "↙ ",  -- when the hint is on the line above the current line
-	-- 			current = "← ",  -- when the hint is on the same line
-	-- 			below = "↖ "  -- when the hint is on the line below the current line
-	-- 		}
-	-- }
+	require('lsp_signature').setup {
+		floating_window = true,
+		hint_prefix = {
+			above = "↙ ",  -- when the hint is on the line above the current line
+			current = "← ",  -- when the hint is on the same line
+			below = "↖ "  -- when the hint is on the line below the current line
+		},
+		handler_opts = {
+			border = "none",
+		},
+	}
 end
