@@ -29,6 +29,7 @@
 						./patch/melange-nvim.patch
 					];
 				};
+				sibling-swap-nvim = (prev.callPackage ./patch/slibling-swap.nix {});
 			});
 		});
 		pkgs = import nixpkgs {
@@ -56,6 +57,17 @@
 					auto-hlsearch-nvim
 					leap-nvim
 					nvim-spider
+					(nvim-treesitter.withAllGrammars.overrideAttrs {
+						src = pkgs.fetchFromGitHub {
+							owner = "nvim-treesitter";
+							repo = "nvim-treesitter";
+							rev = "master"; # Until Iswap updates
+							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
+						};
+					})
+					treesj
+					iswap-nvim
+					sibling-swap-nvim
 				];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig

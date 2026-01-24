@@ -168,7 +168,30 @@ vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent 
 -- Make special mapping for "add surrounding for line"
 vim.keymap.set('n', 'yss', 'ys_', { remap = true })
 
--- treesitter treesj
+---------------------------------[ treesitter ]---------------------------------
+do
+	local tsj = require('treesj')
+	tsj.setup {}
+	vim.keymap.set("n", "<c-j>", tsj.toggle)
+
+	local ss = require('sibling-swap')
+	ss.setup {
+		use_default_keymaps = false
+	}
+	-- Mapping is <c-.> due to a kitty/tmux conflict, we remap <c-.> to <a-.>
+	vim.keymap.set("n", "<A-.>"     , ss.swap_with_right)
+	vim.keymap.set("n", "<A-,>"     , ss.swap_with_left)
+	vim.keymap.set("n", "<leader>." , ss.swap_with_right_with_opp)
+	vim.keymap.set("n", "<leader>," , ss.swap_with_left_with_opp)
+	require('iswap').setup {
+		hl_flash = 'DiffAdd',
+		autoswap = true,
+		flash_style = 'simultaneous',
+		hl_snipe = 'WarningMsg',
+	}
+	vim.keymap.set("n", "<C-s>", "<cmd>ISwap<cr>")
+	vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
+end
 
 -- ==========================[ Replace Neovim UI ]==============================
 
