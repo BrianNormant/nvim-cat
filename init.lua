@@ -121,6 +121,18 @@ vim.opt.updatetime = 2000
 -- leap
 -- spider
 -- mini.bracketed
+require('mini.pairs').setup {
+	mappings = {
+		['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
+		['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+	}
+}
+require('mini.ai').setup {}
+require('mini.move').setup {}
+require('mini.align').setup {}
+require('mini.operators').setup {
+	replace = { prefix = "sp", },
+}
 require('mini.comment').setup()
 require('mini.surround').setup({
 	mappings = {

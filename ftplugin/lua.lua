@@ -32,7 +32,7 @@ if nixCats('lua') then
 			},
 		})
 		--- Crude autotrigger
-		local triggers = {'.', ':', '('}
+		local triggers = {'.', ':'}
 		for _, t in pairs(triggers) do
 			vim.keymap.set('i', t, function()
 				vim.opt.completeopt:append "noselect"
