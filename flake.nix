@@ -91,6 +91,7 @@
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim
 					lsp_signature-nvim
+					firenvim
 				];
 			};
 			lspsAndRuntimeDeps = {
