@@ -1,4 +1,5 @@
 -- =============================[ Colorscheme ]=================================
+
 vim.api.nvim_create_autocmd(
 	{"ColorScheme"},
 	{
@@ -119,7 +120,17 @@ vim.opt.updatetime = 2000
 
 -- ===================[ Operators, Movement & textobject ]======================
 -- leap
--- spider
+do
+	local spider = require('spider')
+	spider.setup {}
+	vim.keymap.set({"n", "o", "x"}, "w", "<cmd>lua require('spider').motion('w')<cr>")
+	vim.keymap.set({"n", "o", "x"}, "e", "<cmd>lua require('spider').motion('e')<cr>")
+	vim.keymap.set({"n", "o", "x"}, "b", "<cmd>lua require('spider').motion('b')<cr>")
+	vim.keymap.set({"n", "o", "x"}, "ge", "<cmd>lua require('spider').motion('ge')<cr>")
+	vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
+	vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
+end
+
 -- mini.bracketed
 require('mini.pairs').setup {
 	mappings = {

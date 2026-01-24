@@ -10,6 +10,10 @@ do
 			info = { border = "none" },
 			signature = { border = "none" },
 		},
+		mappings = {
+			scroll_up = '',
+			scroll_down = '',
+		},
 	}
 	vim.opt_global.completeopt = {
 		"menuone",

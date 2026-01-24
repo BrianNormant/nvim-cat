@@ -55,6 +55,7 @@
 					fzf-lua
 					auto-hlsearch-nvim
 					leap-nvim
+					nvim-spider
 				];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
