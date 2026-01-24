@@ -139,8 +139,9 @@
 			};
 		};
 	in {
-		packages."${system}" = {
+		packages."${system}" = rec {
 			nvim-cat = utils.baseBuilder luaPath {inherit pkgs;} categoryDefinitions packagesDefinitions "nvim-cat";
+			nvim = nvim-cat;
 		};
 	};
 }
