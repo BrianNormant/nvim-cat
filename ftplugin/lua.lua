@@ -31,7 +31,19 @@ if nixCats('lua') then
 				checkThirdParty = false,
 			},
 		})
-		vim.lsp.enable('lua_ls')
+		--- Crude autotrigger
+		local triggers = {'.', ':', '('}
+		for _, t in pairs(triggers) do
+			vim.keymap.set('i', t, function()
+				vim.opt.completeopt:append "noselect"
+				vim.opt.completeopt:append "fuzzy"
+				_G.completeswitch = true
+				-- Should check if inside a comment
+				return t .. '<c-x><c-o>'
+			end, {expr=true, buffer=true})
+		end
+
+		vim.lsp.enable("lua_ls")
 	end
 	if nixCats('lint') then
 
