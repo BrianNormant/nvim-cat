@@ -50,20 +50,42 @@
 					melange-nvim
 				];
 				builtin = with pkgs.vimPlugins; [
-					oil-nvim
+					oil-nvim # replace netwr
 					mini-nvim
+					fzf-lua
+					auto-hlsearch-nvim
+					leap-nvim
 				];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
+					goto-preview
 				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
+					gitsigns-nvim
+					codediff-nvim
 				];
 				lua = with pkgs.vimPlugins; [
 					lazydev-nvim
 				];
+				ui = with pkgs.vimPlugins; [
+					tabby-nvim
+					lualine-nvim
+					marks-nvim
+					registers-nvim
+					hover-nvim
+				];
+				eyecandy = with pkgs.vimPlugins; [
+					lspkind-nvim
+					lsp_signature-nvim
+				];
 			};
 			lspsAndRuntimeDeps = {
+				builtin = with pkgs; [
+					ripgrep
+					fd
+					fzf
+				];
 				lua = with pkgs; [
 					lua-language-server
 					open-vsx.tomblind.local-lua-debugger-vscode
@@ -75,7 +97,11 @@
 				];
 			};
 			optionalPlugins = {};
-			environmentVariables = {};
+			environmentVariables = {
+				git = {
+					VSCODE_DIFF_NO_AUTO_INSTALL = "1";
+				};
+			};
 		};
 
 		packagesDefinitions = {
@@ -93,6 +119,8 @@
 					lua = true;
 					git = true;
 					nix = true;
+					ui = true;
+					eyecandy = true;
 				};
 			};
 		};
