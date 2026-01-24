@@ -237,8 +237,31 @@ end
 ------------------------------------[ Git ]-------------------------------------
 if nixCats('git') then
 	vim.keymap.set('n', '<leader>G', '<cmd>tab Git<cr>')
-	require('gitsigns').setup {}
+	require('gitsigns').setup {
+		-- we want gitsigns to always on the leftmost sign
+		sign_priority = 50,
+		signs = {
+			add          = { show_count = true},
+			change       = { show_count = true},
+			delete       = { show_count = true},
+			topdelete    = { show_count = true},
+			changedelete = { show_count = true},
+			untracked    = { show_count = true},
+		},
+	}
+	local signs = require 'gitsigns'
 
+	vim.keymap.set("n", "<leader>gg", function() signs.setqflist('all') end)
+	vim.keymap.set("n", "]h",         function() signs.nav_hunk('next') end)
+	vim.keymap.set("n", "[h",         function() signs.nav_hunk('prev') end)
+	vim.keymap.set("n", "<leader>hs", function() signs.stage_hunk()     end)
+	vim.keymap.set("n", "<leader>hr", function() signs.reset_hunk()     end)
+	vim.keymap.set("n", "<leader>hh", function() signs.stage_hunk()     end)
+	vim.keymap.set("n", "<leader>hb", function() signs.blame_line()     end)
+	vim.keymap.set("n", "<leaedr>hB", function() signs.blame()          end)
+	vim.keymap.set("n", "<leader>hg", function() FzfLua.git_bcommits {
+		actions = { ["enter"] = function(sel) signs.diffthis(sel[2]) end },
+	}end)
 	-- require('codediff').setup {}
 	-- require('gitgraph').setup {}
 end
