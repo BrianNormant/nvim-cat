@@ -138,6 +138,11 @@ vim.keymap.set("n", "<leader>S", function()
 	vim.notify "Session Saved"
 end)
 
+vim.api.nvim_create_user_command('Copen', function()
+	vim.cmd('copen')
+	vim.cmd('wincmd p')  -- Go back to previous window
+end, {})
+
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
 
