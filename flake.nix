@@ -20,7 +20,7 @@
 # Meme si copier coller du code depuis mon ancienne config, il faut limite et au mieux
 # Prendres inspirations
 
-	outputs = { self, nixpkgs, ... }@inputs: let
+	outputs = {nixpkgs, ... }@inputs: let
 		system = "x86_64-linux";
 		melangeOverlay = (next: prev: {
 			vimPlugins = prev.vimPlugins.extend (f': p': {
@@ -38,11 +38,11 @@
 				inputs.neovim-nightly-overlay.overlays.default
 				inputs.nix-vscode-extensions.overlays.default
 				melangeOverlay
-			];
+		];
 		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
-		categoryDefinitions = {pkgs, settings, ...}@pdef: {
+		categoryDefinitions = {pkgs, ...}: {
 			startupPlugins = {
 				gruvbox = with pkgs.vimPlugins; [
 					gruvbox-material-nvim
@@ -114,6 +114,8 @@
 			environmentVariables = {
 				git = {
 					VSCODE_DIFF_NO_AUTO_INSTALL = "1";
+				};
+				melange = {
 					FZF_DEFAULT_OPTS = "--color=bg+:#3c3836,bg:#32302f,spinner:#8ec07c,hl:#83a598 --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598 --color=bg+:#3c3836,bg:#32302f,spinner:#8ec07c,hl:#83a598 --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598 --color=bg+:#3c3836,bg:#32302f,spinner:#8ec07c,hl:#83a598 --color=fg:#bdae93,header:#83a598,info:#fabd2f,pointer:#8ec07c --color=marker:#8ec07c,fg+:#ebdbb2,prompt:#fabd2f,hl+:#83a598";
 				};
 			};
@@ -121,7 +123,7 @@
 
 		packagesDefinitions = rec {
 			nvim = nvim-cat;
-			nvim-cat = {pkgs, ...}: {
+			nvim-cat = {...}: {
 				settings = {
 					wrapRc = "NIXCAT_DEBUG";
 					configDirName = "nvim-cat";
@@ -139,11 +141,26 @@
 					eyecandy = true;
 				};
 			};
+			# Very simple config to edit Todos, notes, ect
+			# (try org-mode)
+			vim = {...}: {
+				categories = {
+					melange = true;
+					builtin = true;
+				};
+			};
 		};
 	in {
-		packages."${system}" = {
-			nvim-cat = utils.baseBuilder luaPath {inherit pkgs;} categoryDefinitions packagesDefinitions "nvim-cat";
-			nvim = utils.baseBuilder luaPath {inherit pkgs;} categoryDefinitions packagesDefinitions "nvim";
+		packages."${system}" = let
+			fn = utils.baseBuilder
+			luaPath
+				{inherit pkgs;}
+				categoryDefinitions
+				packagesDefinitions;
+		in {
+			nvim-cat = fn "nvim-cat";
+			nvim     = fn "nvim";
+			vim      = fn "vim";
 		};
 	};
 }
