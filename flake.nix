@@ -51,12 +51,11 @@
 					melange-nvim
 				];
 				builtin = with pkgs.vimPlugins; [
-					oil-nvim # replace netwr
 					mini-nvim
-					fzf-lua
 					auto-hlsearch-nvim
-					leap-nvim
 					nvim-spider
+				];
+				treesitter = with pkgs.vimPlugins; [
 					(nvim-treesitter.withAllGrammars.overrideAttrs {
 						src = pkgs.fetchFromGitHub {
 							owner = "nvim-treesitter";
@@ -69,6 +68,8 @@
 					iswap-nvim
 					sibling-swap-nvim
 				];
+				flash = with pkgs.vimPlugins; [flash-nvim];
+				fzflua = with pkgs.vimPlugins; [fzf-lua];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
 					goto-preview
@@ -95,7 +96,7 @@
 				];
 			};
 			lspsAndRuntimeDeps = {
-				builtin = with pkgs; [
+				fzflua = with pkgs; [
 					ripgrep
 					fd
 					fzf
@@ -133,6 +134,9 @@
 				categories = {
 					melange = true;
 					builtin = true;
+					fzflua = true;
+					treesitter = true;
+					flash = true;
 					lsp = true;
 					lua = true;
 					git = true;
