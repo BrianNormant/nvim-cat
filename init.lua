@@ -311,7 +311,7 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	require('lspkind').init {}
 
 	require('lsp_signature').setup {
-		floating_window = true,
+		floating_window = false,
 		hint_prefix = {
 			above = "↙ ",  -- when the hint is on the line above the current line
 			current = "← ",  -- when the hint is on the same line
