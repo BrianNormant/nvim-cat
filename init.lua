@@ -91,6 +91,41 @@ vim.keymap.set({"n", "x"}, "<S-Up>", "<Up>")
 -- open diag
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 
+-- toggle preview-window
+vim.keymap.set("n", "<c-p>", function()
+	-- Check if preview window is open in tabpage
+	local preview_win = nil
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_get_option_value('previewwindow', {win = win}) then
+			preview_win = win
+			break
+		end
+	end
+	if preview_win then
+		vim.cmd 'pclose'
+	else
+		vim.cmd 'pedit'
+	end
+end)
+
+require('preview')
+
+vim.cmd [[
+" https://caleb89taylor.medium.com/customizing-individual-neovim-windows-4a08f2d02b4e
+" Call method on window enter
+augroup WindowManagement
+	autocmd!
+	autocmd FileType * call Handle_Win_Enter()
+augroup END
+
+" Change highlight group of preview window when open
+function! Handle_Win_Enter()
+	if &previewwindow
+		setlocal winhighlight+=Normal:PmenuSel
+		setlocal winhighlight+=CursorLine:PmenuSel
+	endif
+endfunction
+]]
 ----------------------------------[ Session ]-----------------------------------
 vim.keymap.set("n", "<leader>s", function()
 	-- TODO: ask for confirmation
@@ -203,6 +238,25 @@ do
 end
 
 -----------------------------------[ Hover ]------------------------------------
+require('hover').config {
+	providers = {
+		'hover.providers.fold_preview',
+		'hover.providers.diagnostic',
+		'hover.providers.lsp',
+		'hover.providers.dap',
+		'hover.providers.gh',
+		'hover.providers.gh_user',
+	},
+	preview_window = true,
+}
+-- Setup keymaps
+vim.keymap.set('n', 'K', function()
+	require('hover').open()
+end, { desc = 'hover.nvim (open)' })
+
+vim.keymap.set('n', 'gK', function()
+	require('hover').enter()
+end, { desc = 'hover.nvim (enter)' })
 
 -----------------------------------[ Marks ]------------------------------------
 if nixCats('ui') then
