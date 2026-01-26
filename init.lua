@@ -1,5 +1,4 @@
 -- =============================[ Colorscheme ]=================================
-
 vim.api.nvim_create_autocmd(
 	{"ColorScheme"},
 	{
@@ -20,6 +19,10 @@ vim.api.nvim_create_autocmd(
 -- TODO: Find a better bg for the cursorline
 if nixCats('melange') then
 	vim.cmd [[colorscheme melange]]
+end
+
+if nixCats('debug') then
+	vim.g.startuptime_exe_path = "/home/brian/.nix-profile/bin/nvim"
 end
 
 -- Must be set for settings mapping with <leader>
@@ -271,7 +274,7 @@ end
 
 ---------------------------------[ treesitter ]---------------------------------
 if nixCats('treesitter') then
-	vim.api.nvim_create_autocmd('FileType', {
+	vim.api.nvim_create_autocmd('BufReadPre', {
 		group = vim.api.nvim_create_augroup('TSConfig', {}),
 		callback = function()
 			vim.cmd.packadd 'nvim-treesitter'
@@ -317,9 +320,13 @@ if nixCats('builtin') and nixCats('ui') then
 end
 
 if nixCats('builtin') and nixCats('ui') then
-	vim.cmd.packadd 'nvim-origami'
-	require('origami').setup {}
-	vim.opt.foldlevelstart = 99
+	vim.api.nvim_create_autocmd("BufReadPre", {
+		callback = function()
+			vim.cmd.packadd 'nvim-origami'
+			require('origami').setup {}
+			vim.opt.foldlevelstart = 99
+		end
+	})
 end
 
 -----------------------------------[ Hover ]------------------------------------
