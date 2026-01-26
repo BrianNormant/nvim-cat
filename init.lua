@@ -152,87 +152,155 @@ vim.cmd.packadd "nvim.undotree"
 vim.keymap.set("n", "<A-u>", "<cmd>Undotree<cr>")
 
 ------------------------------[ Highlight Search ]------------------------------
-require("auto-hlsearch").setup({
-	remap_keys = { "/", "?", "*", "#", "n", "N" },
-	create_commands = true,
-})
+if nixCats('builtin') then
+	require("auto-hlsearch").setup({
+		remap_keys = { "/", "?", "*", "#", "n", "N" },
+		create_commands = true,
+	})
+end
 vim.cmd.packadd "nohlsearch"
 vim.opt.updatetime = 2000
 
 -- ===================[ Operators, Movement & textobject ]======================
--- leap
-do
-	local spider = require('spider')
-	spider.setup {}
-	vim.keymap.set({"n", "o", "x"}, "w", "<cmd>lua require('spider').motion('w')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "e", "<cmd>lua require('spider').motion('e')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "b", "<cmd>lua require('spider').motion('b')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "ge", "<cmd>lua require('spider').motion('ge')<cr>")
-	vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
-	vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
+if nixCats('leap') then
+	vim.keymap.set({ "n", "x" }, "s",
+	function()
+		return '<Plug>(leap-anywhere)'
+	end,{expr=true})
+	vim.keymap.set({ "n", "x" }, "S", function()
+		require('leap.treesitter').select {
+			opts = require('leap.user').with_traversal_keys("s", "S")
+		}
+	end)
+	vim.keymap.set({ "o" }, "s", '<Plug>(leap)')
+	-- vim.keymap.set({ "o" }, "S", flash.treesitter_search)
+	vim.keymap.set({ "o" }, "r", function()
+		require('leap.remote').action {
+			input = vim.fn.mode("true"):match('o') and '' or 'v'
+		}
+	end)
+
+	require('leap.user').set_repeat_keys('<enter>', '<backspace>')
+
+	-- Automatic paste after remote yank operations:
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'RemoteOperationDone',
+		group = vim.api.nvim_create_augroup('LeapRemote', {}),
+		callback = function (event)
+			if vim.v.operator == 'y' and event.data.register == '"' then
+				vim.cmd('normal! p')
+			end
+		end,
+	})
+	local function as_ft (key_specific_args)
+		local common_args = {
+			inputlen = 1,
+			inclusive = true,
+			opts = {
+				safe_labels = vim.fn.mode(1):match'[no]' and '' or nil,
+			},
+		}
+		return vim.tbl_deep_extend('keep', common_args, key_specific_args)
+	end
+
+	local clever = require('leap.user').with_traversal_keys
+	local clever_f = clever('f', 'F')
+	local clever_t = clever('t', 'T')
+
+	for key, key_specific_args in pairs {
+		f = { opts = clever_f, },
+		F = { backward = true, opts = clever_f },
+		t = { offset = -1, opts = clever_t },
+		T = { backward = true, offset = 1, opts = clever_t },
+	} do
+	vim.keymap.set({'n', 'x', 'o'}, key, function ()
+		require('leap').leap(as_ft(key_specific_args))
+	end)
 end
-
--- mini.bracketed
-require('mini.pairs').setup {
-	mappings = {
-		['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
-		['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+end
+if nixCats('builtin') then
+	do
+		local spider = require('spider')
+		spider.setup {}
+		vim.keymap.set({"n", "o", "x"}, "w", "<cmd>lua require('spider').motion('w')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "e", "<cmd>lua require('spider').motion('e')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "b", "<cmd>lua require('spider').motion('b')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "ge", "<cmd>lua require('spider').motion('ge')<cr>")
+		vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
+		vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
+	end
+	-- mini.bracketed
+	require('mini.pairs').setup {
+		mappings = {
+			['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
+			['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+		}
 	}
-}
-require('mini.ai').setup {}
-require('mini.move').setup {}
-require('mini.align').setup {}
-require('mini.operators').setup {
-	replace = { prefix = "sp", },
-}
+	require('mini.ai').setup {}
+	require('mini.move').setup {}
+	require('mini.align').setup {}
+	require('mini.operators').setup {
+		replace = { prefix = "zp", },
+		-- conflict with a weird neovim default, :h zp
+	}
 
-require('mini.comment').setup()
-require('mini.surround').setup({
-	mappings = {
-		add = 'ys',
-		delete = 'ds',
-		find = '',
-		find_left = '',
-		highlight = '',
-		replace = 'cs',
+	require('mini.comment').setup()
+	require('mini.surround').setup({
+		mappings = {
+			add = 'ys',
+			delete = 'ds',
+			find = '',
+			find_left = '',
+			highlight = '',
+			replace = 'cs',
 
-		-- Add this only if you don't want to use extended mappings
-		suffix_last = '',
-		suffix_next = '',
-	},
-	search_method = 'cover_or_next',
-})
+			-- Add this only if you don't want to use extended mappings
+			suffix_last = '',
+			suffix_next = '',
+		},
+		search_method = 'cover_or_next',
+	})
 
--- Remap adding surrounding to Visual mode selection
-vim.keymap.del('x', 'ys')
-vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
+	-- Remap adding surrounding to Visual mode selection
+	vim.keymap.del('x', 'ys')
+	vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
 
--- Make special mapping for "add surrounding for line"
-vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+	-- Make special mapping for "add surrounding for line"
+	vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+end
 
 ---------------------------------[ treesitter ]---------------------------------
 if nixCats('treesitter') then
-	local tsj = require('treesj')
-	tsj.setup {}
-	vim.keymap.set("n", "<c-j>", tsj.toggle)
+	vim.api.nvim_create_autocmd('FileType', {
+		group = vim.api.nvim_create_augroup('TSConfig', {}),
+		callback = function()
+			vim.cmd.packadd 'treesj'
+			local tsj = require('treesj')
+			tsj.setup {}
+			vim.keymap.set("n", "<c-j>", tsj.toggle)
 
-	local ss = require('sibling-swap')
-	ss.setup {
-		use_default_keymaps = false
-	}
-	-- Mapping is <c-.> due to a kitty/tmux conflict, we remap <c-.> to <a-.>
-	vim.keymap.set("n", "<A-.>"     , ss.swap_with_right)
-	vim.keymap.set("n", "<A-,>"     , ss.swap_with_left)
-	vim.keymap.set("n", "<leader>." , ss.swap_with_right_with_opp)
-	vim.keymap.set("n", "<leader>," , ss.swap_with_left_with_opp)
-	require('iswap').setup {
-		hl_flash = 'DiffAdd',
-		autoswap = true,
-		flash_style = 'simultaneous',
-		hl_snipe = 'WarningMsg',
-	}
-	vim.keymap.set("n", "<C-s>", "<cmd>ISwap<cr>")
-	vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
+			vim.cmd.packadd 'vimplugin-sibling-swap.nvim'
+			local ss = require('sibling-swap')
+			ss.setup {
+				use_default_keymaps = false,
+			}
+			-- Mapping is <c-.> due to a kitty/tmux conflict, we remap <c-.> to <a-.>
+			vim.keymap.set("n", "<A-.>"     , ss.swap_with_right)
+			vim.keymap.set("n", "<A-,>"     , ss.swap_with_left)
+			vim.keymap.set("n", "<leader>." , ss.swap_with_right_with_opp)
+			vim.keymap.set("n", "<leader>," , ss.swap_with_left_with_opp)
+
+			vim.cmd.packadd 'iswap.nvim'
+			require('iswap').setup {
+				hl_flash = 'DiffAdd',
+				autoswap = true,
+				flash_style = 'simultaneous',
+				hl_snipe = 'WarningMsg',
+			}
+			vim.keymap.set("n", "<C-s>", "<cmd>ISwap<cr>")
+			vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
+		end,
+	})
 end
 
 -- ==========================[ Improves Neovim UI ]==============================
@@ -375,7 +443,7 @@ if nixCats('fzflua') then
 	end
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
-else
+elseif nixCats('builtin') then
 	require('mini.pick').setup {}
 	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
 	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)
@@ -429,18 +497,6 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	MiniIcons.mock_nvim_web_devicons()
 	require('lspkind').init {}
 
-	require('lsp_signature').setup {
-		floating_window = false,
-		hint_prefix = {
-			above = "↙ ",  -- when the hint is on the line above the current line
-			current = "← ",  -- when the hint is on the same line
-			below = "↖ "  -- when the hint is on the line below the current line
-		},
-		handler_opts = {
-			border = "none",
-		},
-	}
-
 	local hipatterns = require('mini.hipatterns')
 	require('mini.hipatterns').setup {
 		highlighters = {
@@ -451,4 +507,21 @@ if nixCats('eyecandy') and nixCats('lsp') then
 			hex_color = hipatterns.gen_highlighter.hex_color(),
 		}
 	}
+	vim.api.nvim_create_autocmd('LspAttach', {
+		group = vim.api.nvim_create_augroup('LspAttach_Signature', {}),
+		callback = function()
+			vim.cmd.packadd 'lsp_signature.nvim'
+			require('lsp_signature').setup {
+				floating_window = false,
+				hint_prefix = {
+					above = "↙ ",  -- when the hint is on the line above the current line
+					current = "← ",  -- when the hint is on the same line
+					below = "↖ "  -- when the hint is on the line below the current line
+				},
+				handler_opts = {
+					border = "none",
+				},
+			}
+		end,
+	})
 end

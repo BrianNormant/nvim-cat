@@ -64,11 +64,8 @@
 							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
 						};
 					})
-					treesj
-					iswap-nvim
-					sibling-swap-nvim
 				];
-				flash = with pkgs.vimPlugins; [flash-nvim];
+				leap = with pkgs.vimPlugins; [leap-nvim];
 				fzflua = with pkgs.vimPlugins; [fzf-lua];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
@@ -91,7 +88,6 @@
 				];
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim
-					lsp_signature-nvim
 					firenvim
 				];
 			};
@@ -114,6 +110,14 @@
 			optionalPlugins = {
 				ui = with pkgs.vimPlugins; [
 					nvim-origami
+				];
+				eyecandy = with pkgs.vimPlugins; [
+					lsp_signature-nvim
+				];
+				treesitter = with pkgs.vimPlugins; [
+					treesj
+					sibling-swap-nvim
+					iswap-nvim
 				];
 			};
 			environmentVariables = {
@@ -140,7 +144,7 @@
 					builtin = true;
 					fzflua = true;
 					treesitter = true;
-					flash = true;
+					leap = true;
 					lsp = true;
 					lua = true;
 					git = true;
@@ -157,8 +161,11 @@
 					builtin = true;
 				};
 			};
+			vi = {...}: {
+				categories = {};
+			};
 		};
-	in {
+	in rec {
 		packages."${system}" = let
 			fn = utils.baseBuilder
 			luaPath
@@ -166,9 +173,12 @@
 				categoryDefinitions
 				packagesDefinitions;
 		in {
-			nvim-cat = fn "nvim-cat";
 			nvim     = fn "nvim";
 			vim      = fn "vim";
+			vi       = fn "vi";
+		};
+		overlays.default = final: prev: {
+			inherit (packages."${system}") nvim vim vi;
 		};
 	};
 }
