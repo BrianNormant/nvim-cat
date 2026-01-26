@@ -153,8 +153,11 @@
 					builtin = true;
 				};
 			};
+			vi = {...}: {
+				categories = {};
+			};
 		};
-	in {
+	in rec {
 		packages."${system}" = let
 			fn = utils.baseBuilder
 			luaPath
@@ -162,9 +165,12 @@
 				categoryDefinitions
 				packagesDefinitions;
 		in {
-			nvim-cat = fn "nvim-cat";
 			nvim     = fn "nvim";
 			vim      = fn "vim";
+			vi       = fn "vi";
+		};
+		overlays.default = final: prev: {
+			inherit (packages."${system}") nvim vim vi;
 		};
 	};
 }
