@@ -111,7 +111,11 @@
 					nixd
 				];
 			};
-			optionalPlugins = {};
+			optionalPlugins = {
+				ui = with pkgs.vimPlugins; [
+					nvim-origami
+				];
+			};
 			environmentVariables = {
 				git = {
 					VSCODE_DIFF_NO_AUTO_INSTALL = "1";

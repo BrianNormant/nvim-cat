@@ -145,6 +145,7 @@ end, {})
 
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
+-- the generale nature of those plugins is to extend neovim core functionnality
 
 ----------------------------------[ UndoTree ]----------------------------------
 vim.cmd.packadd "nvim.undotree"
@@ -234,11 +235,22 @@ if nixCats('treesitter') then
 	vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
 end
 
--- ==========================[ Replace Neovim UI ]==============================
+-- ==========================[ Improves Neovim UI ]==============================
+-- Plugins that provide a nicer UI to interact with neovim builtins
 
------------------------------------[ Files ]------------------------------------
-require('mini.files').setup {}
-vim.keymap.set('n', '<leader>o', MiniFiles.open)
+if nixCats('builtin') and nixCats('ui') then
+	require('mini.indentscope').setup {
+		draw = {
+			animation = require('mini.indentscope').gen_animation.none()
+		}
+	}
+end
+
+if nixCats('builtin') and nixCats('ui') then
+	vim.cmd.packadd 'nvim-origami'
+	vim.cmd.require('origami').setup {}
+	vim.opt.foldlevelstart = 99
+end
 
 -----------------------------------[ Hover ]------------------------------------
 if nixCats('ui') then
@@ -271,6 +283,13 @@ end
 ---------------------------------[ Registers ]----------------------------------
 
 -- ========================[ add "Missing" features ]===========================
+-- Those plugins ADD features to neovim, like a integration with fzf,
+-- file manager, ect. But the purpose should still be about programmation and/or
+-- text/code editing
+
+-----------------------------------[ Files ]------------------------------------
+require('mini.files').setup {}
+vim.keymap.set('n', '<leader>o', MiniFiles.open)
 
 ----------------------------------[ Fzf Lua ]-----------------------------------
 if nixCats('fzflua') then
@@ -420,5 +439,16 @@ if nixCats('eyecandy') and nixCats('lsp') then
 		handler_opts = {
 			border = "none",
 		},
+	}
+
+	local hipatterns = require('mini.hipatterns')
+	require('mini.hipatterns').setup {
+		highlighters = {
+			fixme = { pattern = 'FIXME', group = 'MiniHipatternsFixme' },
+			hack  = { pattern = 'HACK',  group = 'MiniHipatternsHack'  },
+			todo  = { pattern = 'TODO',  group = 'MiniHipatternsTodo'  },
+			note  = { pattern = 'NOTE',  group = 'MiniHipatternsNote'  },
+			hex_color = hipatterns.gen_highlighter.hex_color(),
+		}
 	}
 end
