@@ -91,6 +91,41 @@ vim.keymap.set({"n", "x"}, "<S-Up>", "<Up>")
 -- open diag
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 
+-- toggle preview-window
+vim.keymap.set("n", "<c-p>", function()
+	-- Check if preview window is open in tabpage
+	local preview_win = nil
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_get_option_value('previewwindow', {win = win}) then
+			preview_win = win
+			break
+		end
+	end
+	if preview_win then
+		vim.cmd 'pclose'
+	else
+		vim.cmd 'pedit'
+	end
+end)
+
+require('preview')
+
+vim.cmd [[
+" https://caleb89taylor.medium.com/customizing-individual-neovim-windows-4a08f2d02b4e
+" Call method on window enter
+augroup WindowManagement
+	autocmd!
+	autocmd FileType * call Handle_Win_Enter()
+augroup END
+
+" Change highlight group of preview window when open
+function! Handle_Win_Enter()
+	if &previewwindow
+		setlocal winhighlight+=Normal:PmenuSel
+		setlocal winhighlight+=CursorLine:PmenuSel
+	endif
+endfunction
+]]
 ----------------------------------[ Session ]-----------------------------------
 vim.keymap.set("n", "<leader>s", function()
 	-- TODO: ask for confirmation
@@ -102,6 +137,11 @@ vim.keymap.set("n", "<leader>S", function()
 	vim.cmd 'mks!'
 	vim.notify "Session Saved"
 end)
+
+vim.api.nvim_create_user_command('Copen', function()
+	vim.cmd('copen')
+	vim.cmd('wincmd p')  -- Go back to previous window
+end, {})
 
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
@@ -173,7 +213,7 @@ if nixCats('builtin') then
 end
 
 ---------------------------------[ treesitter ]---------------------------------
-do
+if nixCats('treesitter') then
 	local tsj = require('treesj')
 	tsj.setup {}
 	vim.keymap.set("n", "<c-j>", tsj.toggle)
@@ -199,13 +239,32 @@ end
 
 -- ==========================[ Replace Neovim UI ]==============================
 
-------------------------------------[ Oil ]-------------------------------------
-do
-	require('oil').setup {}
-	vim.keymap.set('n', '<leader>o', require('oil').open)
-end
+-----------------------------------[ Files ]------------------------------------
+require('mini.files').setup {}
+vim.keymap.set('n', '<leader>o', MiniFiles.open)
 
 -----------------------------------[ Hover ]------------------------------------
+if nixCats('ui') then
+	require('hover').config {
+		providers = {
+			'hover.providers.fold_preview',
+			'hover.providers.diagnostic',
+			'hover.providers.lsp',
+			'hover.providers.dap',
+			'hover.providers.gh',
+			'hover.providers.gh_user',
+		},
+		preview_window = true,
+	}
+	-- Setup keymaps
+	vim.keymap.set('n', 'K', function()
+		require('hover').open()
+	end, { desc = 'hover.nvim (open)' })
+
+	vim.keymap.set('n', 'gK', function()
+		require('hover').enter()
+	end, { desc = 'hover.nvim (enter)' })
+end
 
 -----------------------------------[ Marks ]------------------------------------
 if nixCats('ui') then
@@ -217,7 +276,7 @@ end
 -- ========================[ add "Missing" features ]===========================
 
 ----------------------------------[ Fzf Lua ]-----------------------------------
-do
+if nixCats('fzflua') then
 	require('fzf-lua').setup {
 		ui_select = true,
 		keymap = {
@@ -260,6 +319,36 @@ do
 	end
 	
 	if nixCats('lsp') then
+		vim.keymap.set("n", "gpr", function()
+			FzfLua.lsp_references {
+				actions = {
+					["enter"] = function(sel, o)
+						for _,s in pairs(sel) do
+							local file = require('fzf-lua.path').entry_to_file(s, o)
+							vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
+						end
+					end
+				},
+			}
+		end)
+		vim.keymap.set("n", "gpi", function()
+			FzfLua.lsp_implementations {
+				actions = {
+					["enter"] = function(sel, o)
+						for _,s in pairs(sel) do
+							local file = require('fzf-lua.path').entry_to_file(s, o)
+							vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
+						end
+					end
+				},
+			}
+		end)
+		vim.keymap.set({"n",  "v"},  "gra", FzfLua.lsp_code_actions)
+		vim.keymap.set({"n"}, "gri", FzfLua.lsp_implementations)
+		vim.keymap.set({"n"}, "grr", FzfLua.lsp_references)
+		vim.keymap.set({"n"}, "grt", FzfLua.lsp_typedefs)
+		vim.keymap.set({"n"}, "gO",  FzfLua.lsp_document_symbols)
+		vim.keymap.set({"n"}, "gd",  FzfLua.lsp_definitions)
 	end
 
 	for _, v in pairs(maps) do
@@ -270,6 +359,14 @@ do
 	end
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
+else
+	require('mini.pick').setup {}
+	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
+	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)
+	vim.keymap.set('n', "<leader>fF",       MiniPick.builtin.grep)
+	vim.keymap.set('n', "<leader>f/",       MiniPick.builtin.grep_live)
+	vim.keymap.set('n', "<leader>fb",       MiniPick.builtin.buffers)
+	vim.keymap.set('n', "<leader>fh",       MiniPick.builtin.help)
 end
 
 ------------------------------------[ Git ]-------------------------------------
@@ -297,9 +394,12 @@ if nixCats('git') then
 	vim.keymap.set("n", "<leader>hh", function() signs.stage_hunk()     end)
 	vim.keymap.set("n", "<leader>hb", function() signs.blame_line()     end)
 	vim.keymap.set("n", "<leaedr>hB", function() signs.blame()          end)
-	vim.keymap.set("n", "<leader>hg", function() FzfLua.git_bcommits {
-		actions = { ["enter"] = function(sel) signs.diffthis(sel[2]) end },
-	}end)
+
+	if nixCats('fzflua') then
+		vim.keymap.set("n", "<leader>hg", function() FzfLua.git_bcommits {
+			actions = { ["enter"] = function(sel) signs.diffthis(sel[2]) end },
+		}end)
+	end
 	require('codediff').setup {}
 	-- require('gitgraph').setup {}
 end
@@ -314,7 +414,7 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	require('lspkind').init {}
 
 	require('lsp_signature').setup {
-		floating_window = true,
+		floating_window = false,
 		hint_prefix = {
 			above = "↙ ",  -- when the hint is on the line above the current line
 			current = "← ",  -- when the hint is on the same line
