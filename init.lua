@@ -111,10 +111,12 @@ vim.cmd.packadd "nvim.undotree"
 vim.keymap.set("n", "<A-u>", "<cmd>Undotree<cr>")
 
 ------------------------------[ Highlight Search ]------------------------------
-require("auto-hlsearch").setup({
-	remap_keys = { "/", "?", "*", "#", "n", "N" },
-	create_commands = true,
-})
+if nixCats('builtin') then
+	require("auto-hlsearch").setup({
+		remap_keys = { "/", "?", "*", "#", "n", "N" },
+		create_commands = true,
+	})
+end
 vim.cmd.packadd "nohlsearch"
 vim.opt.updatetime = 2000
 
@@ -130,44 +132,45 @@ do
 	vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
 	vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
 end
-
--- mini.bracketed
-require('mini.pairs').setup {
-	mappings = {
-		['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
-		['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+if nixCats('builtin') then
+	-- mini.bracketed
+	require('mini.pairs').setup {
+		mappings = {
+			['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
+			['>'] = { action = 'close', pair = '<>', neigh_pattern = '[^\\].' },
+		}
 	}
-}
-require('mini.ai').setup {}
-require('mini.move').setup {}
-require('mini.align').setup {}
-require('mini.operators').setup {
-	replace = { prefix = "sp", },
-}
+	require('mini.ai').setup {}
+	require('mini.move').setup {}
+	require('mini.align').setup {}
+	require('mini.operators').setup {
+		replace = { prefix = "sp", },
+	}
 
-require('mini.comment').setup()
-require('mini.surround').setup({
-	mappings = {
-		add = 'ys',
-		delete = 'ds',
-		find = '',
-		find_left = '',
-		highlight = '',
-		replace = 'cs',
+	require('mini.comment').setup()
+	require('mini.surround').setup({
+		mappings = {
+			add = 'ys',
+			delete = 'ds',
+			find = '',
+			find_left = '',
+			highlight = '',
+			replace = 'cs',
 
-		-- Add this only if you don't want to use extended mappings
-		suffix_last = '',
-		suffix_next = '',
-	},
-	search_method = 'cover_or_next',
-})
+			-- Add this only if you don't want to use extended mappings
+			suffix_last = '',
+			suffix_next = '',
+		},
+		search_method = 'cover_or_next',
+	})
 
--- Remap adding surrounding to Visual mode selection
-vim.keymap.del('x', 'ys')
-vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
+	-- Remap adding surrounding to Visual mode selection
+	vim.keymap.del('x', 'ys')
+	vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
 
--- Make special mapping for "add surrounding for line"
-vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+	-- Make special mapping for "add surrounding for line"
+	vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+end
 
 ---------------------------------[ treesitter ]---------------------------------
 do
