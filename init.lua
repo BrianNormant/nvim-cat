@@ -270,27 +270,36 @@ end
 
 ---------------------------------[ treesitter ]---------------------------------
 if nixCats('treesitter') then
-	local tsj = require('treesj')
-	tsj.setup {}
-	vim.keymap.set("n", "<c-j>", tsj.toggle)
+	vim.api.nvim_create_autocmd('FileType', {
+		group = vim.api.nvim_create_augroup('TSConfig', {}),
+		callback = function()
+			vim.cmd.packadd 'treesj'
+			local tsj = require('treesj')
+			tsj.setup {}
+			vim.keymap.set("n", "<c-j>", tsj.toggle)
 
-	local ss = require('sibling-swap')
-	ss.setup {
-		use_default_keymaps = false
-	}
-	-- Mapping is <c-.> due to a kitty/tmux conflict, we remap <c-.> to <a-.>
-	vim.keymap.set("n", "<A-.>"     , ss.swap_with_right)
-	vim.keymap.set("n", "<A-,>"     , ss.swap_with_left)
-	vim.keymap.set("n", "<leader>." , ss.swap_with_right_with_opp)
-	vim.keymap.set("n", "<leader>," , ss.swap_with_left_with_opp)
-	require('iswap').setup {
-		hl_flash = 'DiffAdd',
-		autoswap = true,
-		flash_style = 'simultaneous',
-		hl_snipe = 'WarningMsg',
-	}
-	vim.keymap.set("n", "<C-s>", "<cmd>ISwap<cr>")
-	vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
+			vim.cmd.packadd 'vimplugin-sibling-swap.nvim'
+			local ss = require('sibling-swap')
+			ss.setup {
+				use_default_keymaps = false,
+			}
+			-- Mapping is <c-.> due to a kitty/tmux conflict, we remap <c-.> to <a-.>
+			vim.keymap.set("n", "<A-.>"     , ss.swap_with_right)
+			vim.keymap.set("n", "<A-,>"     , ss.swap_with_left)
+			vim.keymap.set("n", "<leader>." , ss.swap_with_right_with_opp)
+			vim.keymap.set("n", "<leader>," , ss.swap_with_left_with_opp)
+
+			vim.cmd.packadd 'iswap.nvim'
+			require('iswap').setup {
+				hl_flash = 'DiffAdd',
+				autoswap = true,
+				flash_style = 'simultaneous',
+				hl_snipe = 'WarningMsg',
+			}
+			vim.keymap.set("n", "<C-s>", "<cmd>ISwap<cr>")
+			vim.keymap.set("v", "<C-s>", "<cmd>ISwapWith<cr>")
+		end,
+	})
 end
 
 -- ==========================[ Replace Neovim UI ]==============================
@@ -471,15 +480,21 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	MiniIcons.mock_nvim_web_devicons()
 	require('lspkind').init {}
 
-	require('lsp_signature').setup {
-		floating_window = false,
-		hint_prefix = {
-			above = "↙ ",  -- when the hint is on the line above the current line
-			current = "← ",  -- when the hint is on the same line
-			below = "↖ "  -- when the hint is on the line below the current line
-		},
-		handler_opts = {
-			border = "none",
-		},
-	}
+	vim.api.nvim_create_autocmd('LspAttach', {
+		group = vim.api.nvim_create_augroup('LspAttach_Signature', {}),
+		callback = function()
+			vim.cmd.packadd 'lsp_signature.nvim'
+			require('lsp_signature').setup {
+				floating_window = false,
+				hint_prefix = {
+					above = "↙ ",  -- when the hint is on the line above the current line
+					current = "← ",  -- when the hint is on the same line
+					below = "↖ "  -- when the hint is on the line below the current line
+				},
+				handler_opts = {
+					border = "none",
+				},
+			}
+		end,
+	})
 end

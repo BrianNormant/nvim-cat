@@ -64,9 +64,6 @@
 							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
 						};
 					})
-					treesj
-					iswap-nvim
-					sibling-swap-nvim
 				];
 				leap = with pkgs.vimPlugins; [leap-nvim];
 				fzflua = with pkgs.vimPlugins; [fzf-lua];
@@ -91,7 +88,6 @@
 				];
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim
-					lsp_signature-nvim
 					firenvim
 				];
 			};
@@ -111,7 +107,16 @@
 					nixd
 				];
 			};
-			optionalPlugins = {};
+			optionalPlugins = {
+				eyecandy = with pkgs.vimPlugins; [
+					lsp_signature-nvim
+				];
+				treesitter = with pkgs.vimPlugins; [
+					treesj
+					sibling-swap-nvim
+					iswap-nvim
+				];
+			};
 			environmentVariables = {
 				git = {
 					VSCODE_DIFF_NO_AUTO_INSTALL = "1";
