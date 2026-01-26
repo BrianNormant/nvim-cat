@@ -55,16 +55,6 @@
 					auto-hlsearch-nvim
 					nvim-spider
 				];
-				treesitter = with pkgs.vimPlugins; [
-					(nvim-treesitter.withAllGrammars.overrideAttrs {
-						src = pkgs.fetchFromGitHub {
-							owner = "nvim-treesitter";
-							repo = "nvim-treesitter";
-							rev = "master"; # Until Iswap updates
-							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
-						};
-					})
-				];
 				leap = with pkgs.vimPlugins; [leap-nvim];
 				fzflua = with pkgs.vimPlugins; [fzf-lua];
 				lsp = with pkgs.vimPlugins; [
@@ -89,6 +79,9 @@
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim
 					firenvim
+				];
+				debug = with pkgs.vimPlugins; [
+					vim-startuptime
 				];
 			};
 			lspsAndRuntimeDeps = {
@@ -115,6 +108,14 @@
 					lsp_signature-nvim
 				];
 				treesitter = with pkgs.vimPlugins; [
+					(nvim-treesitter.withAllGrammars.overrideAttrs {
+						src = pkgs.fetchFromGitHub {
+							owner = "nvim-treesitter";
+							repo = "nvim-treesitter";
+							rev = "master"; # Until Iswap updates
+							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
+						};
+					})
 					treesj
 					sibling-swap-nvim
 					iswap-nvim
@@ -151,6 +152,7 @@
 					nix = true;
 					ui = true;
 					eyecandy = true;
+					debug = true;
 				};
 			};
 			# Very simple config to edit Todos, notes, ect

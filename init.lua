@@ -274,6 +274,8 @@ if nixCats('treesitter') then
 	vim.api.nvim_create_autocmd('FileType', {
 		group = vim.api.nvim_create_augroup('TSConfig', {}),
 		callback = function()
+			vim.cmd.packadd 'nvim-treesitter'
+			vim.cmd.packadd 'nvim-treesitter-legacy'
 			vim.cmd.packadd 'treesj'
 			local tsj = require('treesj')
 			tsj.setup {}
@@ -316,7 +318,7 @@ end
 
 if nixCats('builtin') and nixCats('ui') then
 	vim.cmd.packadd 'nvim-origami'
-	vim.cmd.require('origami').setup {}
+	require('origami').setup {}
 	vim.opt.foldlevelstart = 99
 end
 
