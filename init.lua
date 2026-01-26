@@ -161,18 +161,73 @@ vim.cmd.packadd "nohlsearch"
 vim.opt.updatetime = 2000
 
 -- ===================[ Operators, Movement & textobject ]======================
--- leap
-do
-	local spider = require('spider')
-	spider.setup {}
-	vim.keymap.set({"n", "o", "x"}, "w", "<cmd>lua require('spider').motion('w')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "e", "<cmd>lua require('spider').motion('e')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "b", "<cmd>lua require('spider').motion('b')<cr>")
-	vim.keymap.set({"n", "o", "x"}, "ge", "<cmd>lua require('spider').motion('ge')<cr>")
-	vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
-	vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
+if nixCats('leap') then
+	vim.keymap.set({ "n", "x" }, "s",
+	function()
+		return '<Plug>(leap-anywhere)'
+	end,{expr=true})
+	vim.keymap.set({ "n", "x" }, "S", function()
+		require('leap.treesitter').select {
+			opts = require('leap.user').with_traversal_keys("s", "S")
+		}
+	end)
+	vim.keymap.set({ "o" }, "s", '<Plug>(leap)')
+	-- vim.keymap.set({ "o" }, "S", flash.treesitter_search)
+	vim.keymap.set({ "o" }, "r", function()
+		require('leap.remote').action {
+			input = vim.fn.mode("true"):match('o') and '' or 'v'
+		}
+	end)
+
+	require('leap.user').set_repeat_keys('<enter>', '<backspace>')
+
+	-- Automatic paste after remote yank operations:
+	vim.api.nvim_create_autocmd('User', {
+		pattern = 'RemoteOperationDone',
+		group = vim.api.nvim_create_augroup('LeapRemote', {}),
+		callback = function (event)
+			if vim.v.operator == 'y' and event.data.register == '"' then
+				vim.cmd('normal! p')
+			end
+		end,
+	})
+	local function as_ft (key_specific_args)
+		local common_args = {
+			inputlen = 1,
+			inclusive = true,
+			opts = {
+				safe_labels = vim.fn.mode(1):match'[no]' and '' or nil,
+			},
+		}
+		return vim.tbl_deep_extend('keep', common_args, key_specific_args)
+	end
+
+	local clever = require('leap.user').with_traversal_keys
+	local clever_f = clever('f', 'F')
+	local clever_t = clever('t', 'T')
+
+	for key, key_specific_args in pairs {
+		f = { opts = clever_f, },
+		F = { backward = true, opts = clever_f },
+		t = { offset = -1, opts = clever_t },
+		T = { backward = true, offset = 1, opts = clever_t },
+	} do
+	vim.keymap.set({'n', 'x', 'o'}, key, function ()
+		require('leap').leap(as_ft(key_specific_args))
+	end)
+end
 end
 if nixCats('builtin') then
+	do
+		local spider = require('spider')
+		spider.setup {}
+		vim.keymap.set({"n", "o", "x"}, "w", "<cmd>lua require('spider').motion('w')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "e", "<cmd>lua require('spider').motion('e')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "b", "<cmd>lua require('spider').motion('b')<cr>")
+		vim.keymap.set({"n", "o", "x"}, "ge", "<cmd>lua require('spider').motion('ge')<cr>")
+		vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
+		vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
+	end
 	-- mini.bracketed
 	require('mini.pairs').setup {
 		mappings = {
@@ -184,7 +239,8 @@ if nixCats('builtin') then
 	require('mini.move').setup {}
 	require('mini.align').setup {}
 	require('mini.operators').setup {
-		replace = { prefix = "sp", },
+		replace = { prefix = "zp", },
+		-- conflict with a weird neovim default, :h zp
 	}
 
 	require('mini.comment').setup()
@@ -240,8 +296,10 @@ end
 -- ==========================[ Replace Neovim UI ]==============================
 
 -----------------------------------[ Files ]------------------------------------
-require('mini.files').setup {}
-vim.keymap.set('n', '<leader>o', MiniFiles.open)
+if nixCats('builtin') then
+	require('mini.files').setup {}
+	vim.keymap.set('n', '<leader>o', MiniFiles.open)
+end
 
 -----------------------------------[ Hover ]------------------------------------
 if nixCats('ui') then
@@ -359,7 +417,7 @@ if nixCats('fzflua') then
 	end
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
-else
+elseif nixCats('builtin') then
 	require('mini.pick').setup {}
 	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
 	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)

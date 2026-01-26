@@ -1,4 +1,4 @@
-do
+if nixCats('builtin') then
 	require('mini.snippets').setup {}
 	require('mini.notify').setup {}
 	require('mini.completion').setup {

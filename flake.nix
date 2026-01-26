@@ -68,7 +68,7 @@
 					iswap-nvim
 					sibling-swap-nvim
 				];
-				flash = with pkgs.vimPlugins; [flash-nvim];
+				leap = with pkgs.vimPlugins; [leap-nvim];
 				fzflua = with pkgs.vimPlugins; [fzf-lua];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
@@ -136,7 +136,7 @@
 					builtin = true;
 					fzflua = true;
 					treesitter = true;
-					flash = true;
+					leap = true;
 					lsp = true;
 					lua = true;
 					git = true;
