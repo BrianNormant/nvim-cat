@@ -54,9 +54,9 @@
 					mini-nvim
 					auto-hlsearch-nvim
 					nvim-spider
+					lze
 				];
 				leap = with pkgs.vimPlugins; [leap-nvim];
-				fzflua = with pkgs.vimPlugins; [fzf-lua];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
 					goto-preview
@@ -64,7 +64,6 @@
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
 					gitsigns-nvim
-					codediff-nvim
 				];
 				lua = with pkgs.vimPlugins; [
 					lazydev-nvim
@@ -106,6 +105,12 @@
 				];
 				eyecandy = with pkgs.vimPlugins; [
 					lsp_signature-nvim
+				];
+				fzflua = with pkgs.vimPlugins; [
+					fzf-lua
+				];
+				git = with pkgs.vimPlugins; [
+					codediff-nvim
 				];
 				treesitter = with pkgs.vimPlugins; [
 					nvim-treesitter-legacy

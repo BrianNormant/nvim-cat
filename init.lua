@@ -22,7 +22,7 @@ if nixCats('melange') then
 end
 
 if nixCats('debug') then
-	vim.g.startuptime_exe_path = "/home/brian/.nix-profile/bin/nvim"
+	vim.g.startuptime_exe_path = "/home/brian/.config/nvim-cat/result/bin/nvim"
 end
 
 -- Must be set for settings mapping with <leader>
@@ -370,86 +370,95 @@ vim.keymap.set('n', '<leader>o', MiniFiles.open)
 
 ----------------------------------[ Fzf Lua ]-----------------------------------
 if nixCats('fzflua') then
-	require('fzf-lua').setup {
-		ui_select = true,
-		keymap = {
-			fzf = {
-				[ "ctrl-q" ] = "select-all+accept",
-			},
-		},
-		files = {
-			cwd_prompt = false,
-			path_shorten = 1,
-			no_ignore = false,
-		},
+	require('lze').load {
+		{
+			"fzf-lua",
+			event = "DeferredUIEnter",
+			after = function()
+				require('fzf-lua').setup {
+					ui_select = true,
+					keymap = {
+						fzf = {
+							[ "ctrl-q" ] = "select-all+accept",
+						},
+					},
+					files = {
+						cwd_prompt = false,
+						path_shorten = 1,
+						no_ignore = false,
+					},
+				}
+
+				-- Find stuff
+				local maps = {
+					{"<leader><leader>", FzfLua.builtin},
+					{"<leader>ff", FzfLua.files},
+					{"<leader>fF", FzfLua.live_grep_native},
+					{"<leader>f/", FzfLua.blines},
+					{"<leader>fb", FzfLua.buffers},
+					{"<leader>fo", FzfLua.oldfiles},
+					{"<leader>fq", FzfLua.quickfix},
+					{"<leader>fQ", FzfLua.loclist},
+					{"<leader>ft", FzfLua.tags},
+					-- usefull for neovim
+					{"<leader>fh", FzfLua.help_tags},
+					{"<leader>fk", FzfLua.manpages},
+					{"<leader>fm", FzfLua.marks},
+					{"m/", FzfLua.marks},
+
+					{"z=", FzfLua.spell_suggest},
+					-- i_<c-something> to live grep word
+					-- NOTE:
+					-- - plenty of git utilities
+					--
+				}
+
+				if nixCats('dap') then
+				end
+
+				if nixCats('lsp') then
+					vim.keymap.set("n", "gpr", function()
+						FzfLua.lsp_references {
+							actions = {
+								["enter"] = function(sel, o)
+									for _,s in pairs(sel) do
+										local file = require('fzf-lua.path').entry_to_file(s, o)
+										vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
+									end
+								end
+							},
+						}
+					end)
+					vim.keymap.set("n", "gpi", function()
+						FzfLua.lsp_implementations {
+							actions = {
+								["enter"] = function(sel, o)
+									for _,s in pairs(sel) do
+										local file = require('fzf-lua.path').entry_to_file(s, o)
+										vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
+									end
+								end
+							},
+						}
+					end)
+					vim.keymap.set({"n",  "v"},  "gra", FzfLua.lsp_code_actions)
+					vim.keymap.set({"n"}, "gri", FzfLua.lsp_implementations)
+					vim.keymap.set({"n"}, "grr", FzfLua.lsp_references)
+					vim.keymap.set({"n"}, "grt", FzfLua.lsp_typedefs)
+					vim.keymap.set({"n"}, "gO",  FzfLua.lsp_document_symbols)
+					vim.keymap.set({"n"}, "gd",  FzfLua.lsp_definitions)
+				end
+
+				for _, v in pairs(maps) do
+					local key = v[1]
+					local action = v[2]
+
+					vim.keymap.set("n", key, action)
+				end
+
+			end,
+		}
 	}
-
-	-- Find stuff
-	local maps = {
-		{"<leader><leader>", FzfLua.builtin},
-		{"<leader>ff", FzfLua.files},
-		{"<leader>fF", FzfLua.live_grep_native},
-		{"<leader>f/", FzfLua.blines},
-		{"<leader>fb", FzfLua.buffers},
-		{"<leader>fo", FzfLua.oldfiles},
-		{"<leader>fq", FzfLua.quickfix},
-		{"<leader>fQ", FzfLua.loclist},
-		{"<leader>ft", FzfLua.tags},
-		-- usefull for neovim
-		{"<leader>fh", FzfLua.help_tags},
-		{"<leader>fk", FzfLua.manpages},
-		{"<leader>fm", FzfLua.marks},
-		{"m/", FzfLua.marks},
-
-		{"z=", FzfLua.spell_suggest},
-		-- i_<c-something> to live grep word
-		-- NOTE:
-		-- - plenty of git utilities
-		--
-	}
-
-	if nixCats('dap') then
-	end
-	
-	if nixCats('lsp') then
-		vim.keymap.set("n", "gpr", function()
-			FzfLua.lsp_references {
-				actions = {
-					["enter"] = function(sel, o)
-						for _,s in pairs(sel) do
-							local file = require('fzf-lua.path').entry_to_file(s, o)
-							vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
-						end
-					end
-				},
-			}
-		end)
-		vim.keymap.set("n", "gpi", function()
-			FzfLua.lsp_implementations {
-				actions = {
-					["enter"] = function(sel, o)
-						for _,s in pairs(sel) do
-							local file = require('fzf-lua.path').entry_to_file(s, o)
-							vim.cmd(string.format("pedit +%d %s", file.line, file.path or file.uri))
-						end
-					end
-				},
-			}
-		end)
-		vim.keymap.set({"n",  "v"},  "gra", FzfLua.lsp_code_actions)
-		vim.keymap.set({"n"}, "gri", FzfLua.lsp_implementations)
-		vim.keymap.set({"n"}, "grr", FzfLua.lsp_references)
-		vim.keymap.set({"n"}, "grt", FzfLua.lsp_typedefs)
-		vim.keymap.set({"n"}, "gO",  FzfLua.lsp_document_symbols)
-		vim.keymap.set({"n"}, "gd",  FzfLua.lsp_definitions)
-	end
-
-	for _, v in pairs(maps) do
-		local key = v[1]
-		local action = v[2]
-
-		vim.keymap.set("n", key, action)
-	end
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
 elseif nixCats('builtin') then
@@ -493,7 +502,13 @@ if nixCats('git') then
 			actions = { ["enter"] = function(sel) signs.diffthis(sel[2]) end },
 		}end)
 	end
-	require('codediff').setup {}
+	require('lze').load {{
+		'codediff.nvim',
+		cmd = { "CodeDiff" },
+		after = function()
+			require('codediff').setup {}
+		end,
+	}}
 	-- require('gitgraph').setup {}
 end
 
@@ -502,20 +517,26 @@ vim.cmd.packadd "cfilter"
 
 -- ##############################[ Eye Candy ]##################################
 if nixCats('eyecandy') and nixCats('lsp') then
-	require('mini.icons').setup {}
-	MiniIcons.mock_nvim_web_devicons()
-	require('lspkind').init {}
+	require('lze').load {{
+		'icons',
+		event = "DeferredUIEnter",
+		after = function()
+			require('mini.icons').setup {}
+			MiniIcons.mock_nvim_web_devicons()
+			require('lspkind').init {}
 
-	local hipatterns = require('mini.hipatterns')
-	require('mini.hipatterns').setup {
-		highlighters = {
-			fixme = { pattern = 'FIXME', group = 'MiniHipatternsFixme' },
-			hack  = { pattern = 'HACK',  group = 'MiniHipatternsHack'  },
-			todo  = { pattern = 'TODO',  group = 'MiniHipatternsTodo'  },
-			note  = { pattern = 'NOTE',  group = 'MiniHipatternsNote'  },
-			hex_color = hipatterns.gen_highlighter.hex_color(),
-		}
-	}
+			local hipatterns = require('mini.hipatterns')
+			require('mini.hipatterns').setup {
+				highlighters = {
+					fixme = { pattern = 'FIXME', group = 'MiniHipatternsFixme' },
+					hack  = { pattern = 'HACK',  group = 'MiniHipatternsHack'  },
+					todo  = { pattern = 'TODO',  group = 'MiniHipatternsTodo'  },
+					note  = { pattern = 'NOTE',  group = 'MiniHipatternsNote'  },
+					hex_color = hipatterns.gen_highlighter.hex_color(),
+				}
+			}
+		end
+	}}
 	vim.api.nvim_create_autocmd('LspAttach', {
 		group = vim.api.nvim_create_augroup('LspAttach_Signature', {}),
 		callback = function()
