@@ -13,6 +13,14 @@ vim.api.nvim_create_autocmd(
 			" highlight! link CurSearch FloatShadow
 			" highlight Substitute guibg=#545454
 			]]
+			if nixCats('melange') then
+				vim.cmd [[
+				highlight CursorLine  guibg=#3C3836
+				highlight TabLine     guibg=#32302F guifg=#c1a78e
+				highlight TabLineSel  guibg=#3C3836 guifg=#c1a78e
+				highlight TabLineFill guibg=#32302F
+				]]
+			end
 		end
 	}
 )

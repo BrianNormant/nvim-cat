@@ -72,7 +72,10 @@ require('lze').load {{
 		local melange = require 'lualine.themes.melange'
 		melange.normal.a = melange.normal.c
 		melange.normal.b = melange.normal.c
-		-- melange.normal.c = melange.normal.y
+		melange.normal.a.bg = "#3C3836"
+		melange.normal.b.bg = "#3C3836"
+		melange.normal.c.bg = "#3C3836"
+
 		melange.insert = melange.normal
 		melange.replace = melange.normal
 		melange.command = melange.normal
