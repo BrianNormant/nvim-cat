@@ -315,8 +315,17 @@ if nixCats('builtin') and nixCats('ui') then
 	require('mini.indentscope').setup {
 		draw = {
 			animation = require('mini.indentscope').gen_animation.none()
-		}
+		},
+		symbol = string.sub(vim.opt.listchars:get()["tab"], 1, 1),
 	}
+	vim.api.nvim_create_autocmd({'ColorScheme', 'UIEnter'}, {
+		callback = function()
+			vim.cmd [[
+			highlight! link MiniIndentscopeSymbol Comment
+			]]
+		end
+	})
+	require("mini.cursorword").setup()
 end
 
 if nixCats('builtin') and nixCats('ui') then
