@@ -84,7 +84,7 @@
 				];
 			};
 			lspsAndRuntimeDeps = {
-				fzflua = with pkgs; [
+				builtin = with pkgs; [
 					ripgrep
 					fd
 					fzf
@@ -149,7 +149,6 @@
 				categories = {
 					melange = true;
 					builtin = true;
-					fzflua = true;
 					treesitter = true;
 					leap = true;
 					lsp = true;

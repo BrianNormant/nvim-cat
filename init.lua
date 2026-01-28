@@ -191,7 +191,8 @@ if nixCats('leap') then
 		}
 	end)
 
-	require('leap.user').set_repeat_keys('<enter>', '<backspace>')
+	-- conflict in quicklist list
+	-- require('leap.user').set_repeat_keys('<enter>', '<backspace>')
 
 	-- Automatic paste after remote yank operations:
 	vim.api.nvim_create_autocmd('User', {
@@ -480,12 +481,17 @@ if nixCats('fzflua') then
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
 elseif nixCats('builtin') then
 	require('mini.pick').setup {}
+	require('mini.extra').setup {}
 	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
 	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)
-	vim.keymap.set('n', "<leader>fF",       MiniPick.builtin.grep)
-	vim.keymap.set('n', "<leader>f/",       MiniPick.builtin.grep_live)
+	vim.keymap.set('n', "<leader>fF",       MiniPick.builtin.grep_live)
+	vim.keymap.set('n', "<leader>f/",       MiniExtra.pickers.buf_lines)
 	vim.keymap.set('n', "<leader>fb",       MiniPick.builtin.buffers)
+	vim.keymap.set('n', "<leader>fo",       MiniExtra.pickers.oldfiles)
 	vim.keymap.set('n', "<leader>fh",       MiniPick.builtin.help)
+	vim.keymap.set('n', "<leader>fk",       MiniExtra.pickers.manpages)
+	vim.keymap.set('n', "z=",               MiniExtra.pickers.spellsuggest)
+	vim.keymap.set('n', "m/",               MiniExtra.pickers.marks)
 end
 
 ------------------------------------[ Git ]-------------------------------------
