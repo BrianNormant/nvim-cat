@@ -66,14 +66,6 @@ local function get_tabline()
 	-- ./A -> A
 	-- ./a/A -> a/A
 	-- ./a/b/A -> ./../A -- where a/b is a long string
-	local function shorten(subpath)
-		local MAX_SUBPATH = 10
-		if #subpath > MAX_SUBPATH then
-			return '..'
-		else
-			return subpath
-		end
-	end
 
 	local file_paths = {}
 	for _, i in ipairs(tab_info) do
@@ -81,6 +73,7 @@ local function get_tabline()
 			i.filetype ~= 'fugitive' and
 			i.filetype ~= 'minipick' and
 			i.filetype ~= 'help' and
+			i.filetype ~= 'gitcommit' and
 			i.path ~= ""
 			then
 			table.insert(file_paths, i.path)
@@ -98,7 +91,12 @@ local function get_tabline()
 		local active_hl = is_active and "%#TabLineSel#" or "%#TabLine#"
 
 		-- Start tab segment
-		s = s .. active_hl .. " " .. i .. " "
+		s = s .. active_hl .. " "
+		if is_active then
+			s = s .. '| '
+		else
+			s = s .. "¦ "
+		end
 
 		local path = info.path
 		local ft = info.filetype
@@ -113,8 +111,16 @@ local function get_tabline()
 			display = "[Pick]"
 		elseif ft == "help" then
 			display = string.format("[Help (%s)]", vim.fn.fnamemodify(path, ':t'))
+		elseif ft == "gitcommit" then
+			display = "[Commit]"
 		else
 			display = string.sub(path, #lca + 1)
+			if #display > 50 then
+				local idx = string.find(display, '/', 1, true)
+				local h = string.sub(display, 1, idx - 1)
+				local f = vim.fn.fnamemodify(display, ':t')
+				display = h .. '/.../' .. f
+			end
 		end
 
 
