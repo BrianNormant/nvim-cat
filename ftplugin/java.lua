@@ -1,27 +1,17 @@
 if nixCats('java') and nixCats('lsp') then
 	vim.cmd.packadd "vimplugin-spring-boot"
-	vim.cmd.packadd "nvim-java"
 	vim.cmd.packadd "nvim-java-core"
 	vim.cmd.packadd "nvim-java-dap"
 	vim.cmd.packadd "nvim-java-refactor"
 	vim.cmd.packadd "nvim-java-test"
+	vim.cmd.packadd "nvim-java"
 	-- because we can't run stuff directly on nix, we symlink to
 	-- the store directory
 	local cache = vim.fn.stdpath('data')
 	local jdtls_path = nixCats.get('jdk').jdtls
 	local jdtls_version = '1.54.0'
 
-	require('java').setup {
-		jdk = {
-			auto_install = false,
-			version = '25',
-		},
-		jdtls = {
-			version = jdtls_version
-		}
-	}
-
-	-- for jdtls,
+		-- for jdtls,
 	if not _G.jdtls_replaced then
 		local fmt = [[
 		export cache=%s
@@ -72,6 +62,15 @@ if nixCats('java') and nixCats('lsp') then
 
 		_G.jdtls_replaced = true
 	end
+
+	require('java').setup {
+		jdk = {
+			auto_install = false,
+		},
+		jdtls = {
+			version = jdtls_version
+		}
+	}
 
 	vim.lsp.config('jdtls', {
 		settings = {

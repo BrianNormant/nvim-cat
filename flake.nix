@@ -93,7 +93,6 @@
 				debug = with pkgs.vimPlugins; [
 					vim-startuptime
 				];
-#########################[ Language Speficic plugins ]##########################
 			};
 			lspsAndRuntimeDeps = {
 				builtin = with pkgs; [
@@ -148,6 +147,9 @@
 				];
 				java = with pkgs.vimPlugins; [
 					nvim-java
+					nvim-java-core
+					nvim-java-refactor
+					nvim-java-test
 					nvim-java-dap
 					spring-boot
 				];
