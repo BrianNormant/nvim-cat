@@ -66,9 +66,6 @@
 					vim-fugitive
 					gitsigns-nvim
 				];
-				lua = with pkgs.vimPlugins; [
-					lazydev-nvim
-				];
 				ui = with pkgs.vimPlugins; [
 					tabby-nvim
 					lualine-nvim
@@ -82,6 +79,10 @@
 				];
 				debug = with pkgs.vimPlugins; [
 					vim-startuptime
+				];
+#########################[ Language Speficic plugins ]##########################
+				lua = with pkgs.vimPlugins; [
+					lazydev-nvim
 				];
 				java = with pkgs.vimPlugins; [
 					nvim-java
