@@ -159,6 +159,9 @@
 					eyecandy = true;
 					debug = true;
 				};
+				extra = {
+					nixdExtras.nixpkgs = ''import ${pkgs.path}'';
+				};
 			};
 			# Very simple config to edit Todos, notes, ect
 			# (try org-mode)
