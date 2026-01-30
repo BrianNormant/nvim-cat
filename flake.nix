@@ -149,8 +149,7 @@
 		};
 
 		packagesDefinitions = rec {
-			nvim = nvim-cat;
-			nvim-cat = {...}: {
+			nvim = {...}: {
 				settings = {
 					wrapRc = "NIXCAT_DEBUG";
 					configDirName = "nvim-cat";
