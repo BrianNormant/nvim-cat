@@ -30,6 +30,7 @@
 					];
 				};
 				sibling-swap-nvim = (prev.callPackage ./patch/slibling-swap.nix {});
+				spring-boot = (prev.callPackage ./patch/spring-boot.nix {});
 			});
 		});
 		pkgs = import nixpkgs {
@@ -82,6 +83,11 @@
 				debug = with pkgs.vimPlugins; [
 					vim-startuptime
 				];
+				java = with pkgs.vimPlugins; [
+					nvim-java
+					nvim-java-dap
+					spring-boot
+				];
 			};
 			lspsAndRuntimeDeps = {
 				builtin = with pkgs; [
@@ -97,6 +103,11 @@
 				];
 				nix = with pkgs; [
 					nixd
+				];
+				java = with pkgs; [
+					jdk21_headless
+					jdk25_headless
+					jdt-language-server
 				];
 			};
 			optionalPlugins = {
@@ -153,6 +164,12 @@
 					leap = true;
 					lsp = true;
 					lua = true;
+					java = true;
+					jdk = {
+						jdk21 = pkgs.jdk21_headless;
+						jdk25 = pkgs.jdk25_headless;
+						jdtls = pkgs.java-language-server;
+					};
 					git = true;
 					nix = true;
 					ui = true;
