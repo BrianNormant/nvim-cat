@@ -481,7 +481,14 @@ if nixCats('fzflua') then
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
 elseif nixCats('builtin') then
-	require('mini.pick').setup {}
+	require('mini.pick').setup {
+		mappings = {
+			choose_marked = '<C-q>', -- send selected to qflist
+			mark = '<Tab>',
+			mark_all = '<S-Tab>',
+			toggle_preview = '<C-p>',
+		}
+	}
 	require('mini.extra').setup {}
 	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
 	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)
