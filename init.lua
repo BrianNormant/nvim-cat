@@ -432,6 +432,7 @@ if nixCats('fzflua') then
 				}
 
 				if nixCats('dap') then
+					require('dap-view').setup {}
 				end
 
 				if nixCats('lsp') then

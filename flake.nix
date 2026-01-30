@@ -62,6 +62,19 @@
 					nvim-lspconfig
 					goto-preview
 				];
+				dap = with pkgs.vimPlugins; [
+					nvim-dap-view
+					nvim-dap
+				];
+				lint = with pkgs.vimPlugins; [
+					nvim-lint
+				];
+				format = with pkgs.vimPlugins; [
+					conform
+				];
+				runner = with pkgs.vimPlugins; [
+					overseer
+				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
 					gitsigns-nvim
@@ -163,6 +176,7 @@
 					treesitter = true;
 					leap = true;
 					lsp = true;
+					dap = true;
 					lua = true;
 					java = true;
 					jdk = {
