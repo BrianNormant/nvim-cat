@@ -386,6 +386,39 @@ end
 require('mini.files').setup {}
 vim.keymap.set('n', '<leader>o', MiniFiles.open)
 
+
+------------------------------------[ Dap ]-------------------------------------
+if nixCats('dap') then
+	local dap, dapui = require("dap"), require("dapui")
+	dapui.setup {
+		layouts = {
+			{
+				elements = {
+					{ id = "scopes",  size = 0.5 },
+					{ id = "watches", size = 0.25 },
+					{ id = "console", size = 0.25 },
+				},
+				position = "bottom",
+				size = 10,
+			},
+		}
+	}
+
+	dap.listeners.before.attach.dapui_config = function()
+		dapui.open()
+	end
+	dap.listeners.before.launch.dapui_config = function()
+		dapui.open()
+	end
+	dap.listeners.before.event_terminated.dapui_config = function()
+		dapui.close()
+	end
+	dap.listeners.before.event_exited.dapui_config = function()
+		dapui.close()
+	end
+
+end
+
 ----------------------------------[ Fzf Lua ]-----------------------------------
 if nixCats('fzflua') then
 	require('lze').load {
@@ -430,10 +463,6 @@ if nixCats('fzflua') then
 					-- - plenty of git utilities
 					--
 				}
-
-				if nixCats('dap') then
-					require('dap-view').setup {}
-				end
 
 				if nixCats('lsp') then
 					vim.keymap.set("n", "gpr", function()

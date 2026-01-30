@@ -37,9 +37,9 @@
 			inherit system;
 			overlays = [
 				inputs.neovim-nightly-overlay.overlays.default
-				inputs.nix-vscode-extensions.overlays.default
-				melangeOverlay
-		];
+					inputs.nix-vscode-extensions.overlays.default
+					melangeOverlay
+			];
 		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
@@ -63,7 +63,7 @@
 					goto-preview
 				];
 				dap = with pkgs.vimPlugins; [
-					nvim-dap-view
+					nvim-dap-ui
 					nvim-dap
 				];
 				lint = with pkgs.vimPlugins; [
@@ -94,14 +94,6 @@
 					vim-startuptime
 				];
 #########################[ Language Speficic plugins ]##########################
-				lua = with pkgs.vimPlugins; [
-					lazydev-nvim
-				];
-				java = with pkgs.vimPlugins; [
-					nvim-java
-					nvim-java-dap
-					spring-boot
-				];
 			};
 			lspsAndRuntimeDeps = {
 				builtin = with pkgs; [
@@ -150,6 +142,14 @@
 					treesj
 					sibling-swap-nvim
 					iswap-nvim
+				];
+				lua = with pkgs.vimPlugins; [
+					lazydev-nvim
+				];
+				java = with pkgs.vimPlugins; [
+					nvim-java
+					nvim-java-dap
+					spring-boot
 				];
 			};
 			environmentVariables = {

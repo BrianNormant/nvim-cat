@@ -1,4 +1,10 @@
-do
+if nixCats('java') and nixCats('lsp') then
+	vim.cmd.packadd "vimplugin-spring-boot"
+	vim.cmd.packadd "nvim-java"
+	vim.cmd.packadd "nvim-java-core"
+	vim.cmd.packadd "nvim-java-dap"
+	vim.cmd.packadd "nvim-java-refactor"
+	vim.cmd.packadd "nvim-java-test"
 	-- because we can't run stuff directly on nix, we symlink to
 	-- the store directory
 	local cache = vim.fn.stdpath('data')
