@@ -241,7 +241,7 @@ if nixCats('builtin') then
 		vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
 		vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
 	end
-	-- mini.bracketed
+	require('mini.bracketed').setup {}
 	require('mini.pairs').setup {
 		mappings = {
 			['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
@@ -254,6 +254,11 @@ if nixCats('builtin') then
 	require('mini.operators').setup {
 		replace = { prefix = "zp", },
 		-- conflict with a weird neovim default, :h zp
+	}
+	require('mini.cmdline').setup {
+		autocomplete = {
+			enable = false,
+		},
 	}
 
 	require('mini.comment').setup()
@@ -279,6 +284,30 @@ if nixCats('builtin') then
 
 	-- Make special mapping for "add surrounding for line"
 	vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+
+	-- Session
+	require('mini.sessions').setup {}
+	vim.keymap.set("n", "<leader>s", MiniSessions.read)
+	vim.keymap.set("n", "<leader>S", MiniSessions.write)
+	vim.keymap.set("n", "<leader>fs", MiniSessions.select)
+
+	vim.api.nvim_create_user_command(
+		"Session",
+		function(opts)
+			MiniSessions.write(opts.fargs[1])
+		end,
+		{ nargs = 1}
+	)
+	if vim.env.NIXCAT_DEBUG then
+		vim.api.nvim_create_user_command(
+			"RE",
+			function(_)
+				MiniSessions.write()
+				MiniSessions.read()
+			end,
+			{}
+		)
+	end
 end
 
 ---------------------------------[ treesitter ]---------------------------------
