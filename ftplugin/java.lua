@@ -73,6 +73,9 @@ if nixCats('java') and nixCats('lsp') then
 	}
 
 	vim.lsp.config('jdtls', {
+		handlers = {
+			['$/progress'] = function(_) end,
+		},
 		settings = {
 			java = {
 				configuration = {

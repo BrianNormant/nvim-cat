@@ -154,6 +154,34 @@ vim.api.nvim_create_user_command('Copen', function()
 	vim.cmd('wincmd p')  -- Go back to previous window
 end, {})
 
+-- =================================[ LSP ]=====================================
+if nixCats('lsp') and nixCats('builtin') then
+	vim.api.nvim_create_autocmd("LspAttach", {
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			client.server_capabilities.semanticTokensProvider = nil
+
+			local set = function(m, lhs, rhs)
+				vim.keymap.set(m, lhs, rhs, { buffer = true })
+			end
+
+			-- keymaps (keep the default use of the qflist for all)
+			set("n", "gd", vim.lsp.buf.definition)
+			set("n", "gO", function() MiniExtra.pickers.lsp {scope = "document_symbol"} end)
+			set("n", "grd", vim.lsp.buf.workspace_diagnostics )
+			set("n", "grD", vim.diagnostic.setloclist)
+
+			-- goto tab ...
+			-- vim.keymap.del("n", "gt")
+			set("n", "gtd", "<cmd>tab split | lua vim.lsp.buf.definition() <cr>")
+			set("n", "gtD", "<cmd>tab split | lua vim.lsp.buf.declaration() <cr>")
+			set("n", "gti", "<cmd>tab split | lua vim.lsp.buf.implementation() <cr>")
+			set("n", "gtt", "<cmd>tab split | lua vim.lsp.buf.type_definition() <cr>")
+			set("n", "gtr", "<cmd>tab split | lua vim.lsp.buf.references() <cr>")
+
+		end,
+	});
+end
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
 -- the generale nature of those plugins is to extend neovim core functionnality
@@ -643,4 +671,5 @@ if nixCats('eyecandy') and nixCats('lsp') then
 			}
 		end,
 	})
+	require('vim._extui').enable {}
 end
