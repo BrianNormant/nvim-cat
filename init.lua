@@ -434,6 +434,11 @@ end
 
 ---------------------------------[ Registers ]----------------------------------
 
+----------------------------------[ QuickFix ]----------------------------------
+if nixCats('ui') then
+	require('quicker').setup {}
+end
+
 -- ========================[ add "Missing" features ]===========================
 -- Those plugins ADD features to neovim, like a integration with fzf,
 -- file manager, ect. But the purpose should still be about programmation and/or
