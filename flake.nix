@@ -86,6 +86,7 @@
 					marks-nvim
 					registers-nvim
 					hover-nvim
+					quicker-nvim
 				];
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim

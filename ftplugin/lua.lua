@@ -6,6 +6,9 @@ if nixCats('lua') and nixCats('lsp') then
 		},
 	}
 	vim.lsp.config('lua_ls', {
+		handlers = {
+			['$/progress'] = function(_) end,
+		},
 		settings = {
 			Lua = {
 				formatters = {

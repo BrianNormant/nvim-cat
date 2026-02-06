@@ -156,6 +156,34 @@ vim.api.nvim_create_user_command('Copen', function()
 	vim.cmd('wincmd p')  -- Go back to previous window
 end, {})
 
+-- =================================[ LSP ]=====================================
+if nixCats('lsp') and nixCats('builtin') then
+	vim.api.nvim_create_autocmd("LspAttach", {
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			client.server_capabilities.semanticTokensProvider = nil
+
+			local set = function(m, lhs, rhs)
+				vim.keymap.set(m, lhs, rhs, { buffer = true })
+			end
+
+			-- keymaps (keep the default use of the qflist for all)
+			set("n", "gd", vim.lsp.buf.definition)
+			set("n", "gO", function() MiniExtra.pickers.lsp {scope = "document_symbol"} end)
+			set("n", "grd", vim.lsp.buf.workspace_diagnostics )
+			set("n", "grD", vim.diagnostic.setloclist)
+
+			-- goto tab ...
+			-- vim.keymap.del("n", "gt")
+			set("n", "gtd", "<cmd>tab split | lua vim.lsp.buf.definition() <cr>")
+			set("n", "gtD", "<cmd>tab split | lua vim.lsp.buf.declaration() <cr>")
+			set("n", "gti", "<cmd>tab split | lua vim.lsp.buf.implementation() <cr>")
+			set("n", "gtt", "<cmd>tab split | lua vim.lsp.buf.type_definition() <cr>")
+			set("n", "gtr", "<cmd>tab split | lua vim.lsp.buf.references() <cr>")
+
+		end,
+	});
+end
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
 -- the generale nature of those plugins is to extend neovim core functionnality
@@ -243,7 +271,7 @@ if nixCats('builtin') then
 		vim.keymap.set("i", "<C-f>", function() spider.motion('w') end)
 		vim.keymap.set("i", "<C-b>", function() spider.motion('b') end)
 	end
-	-- mini.bracketed
+	require('mini.bracketed').setup {}
 	require('mini.pairs').setup {
 		mappings = {
 			['<'] = { action = 'open', pair = '<>', neigh_pattern = '[^\\].' },
@@ -256,6 +284,11 @@ if nixCats('builtin') then
 	require('mini.operators').setup {
 		replace = { prefix = "zp", },
 		-- conflict with a weird neovim default, :h zp
+	}
+	require('mini.cmdline').setup {
+		autocomplete = {
+			enable = false,
+		},
 	}
 
 	require('mini.comment').setup()
@@ -281,6 +314,30 @@ if nixCats('builtin') then
 
 	-- Make special mapping for "add surrounding for line"
 	vim.keymap.set('n', 'yss', 'ys_', { remap = true })
+
+	-- Session
+	require('mini.sessions').setup {}
+	vim.keymap.set("n", "<leader>s", MiniSessions.read)
+	vim.keymap.set("n", "<leader>S", MiniSessions.write)
+	vim.keymap.set("n", "<leader>fs", MiniSessions.select)
+
+	vim.api.nvim_create_user_command(
+		"Session",
+		function(opts)
+			MiniSessions.write(opts.fargs[1])
+		end,
+		{ nargs = 1}
+	)
+	if vim.env.NIXCAT_DEBUG then
+		vim.api.nvim_create_user_command(
+			"RE",
+			function(_)
+				MiniSessions.write()
+				MiniSessions.read()
+			end,
+			{}
+		)
+	end
 end
 
 ---------------------------------[ treesitter ]---------------------------------
@@ -378,6 +435,11 @@ if nixCats('ui') then
 end
 
 ---------------------------------[ Registers ]----------------------------------
+
+----------------------------------[ QuickFix ]----------------------------------
+if nixCats('ui') then
+	require('quicker').setup {}
+end
 
 -- ========================[ add "Missing" features ]===========================
 -- Those plugins ADD features to neovim, like a integration with fzf,
@@ -635,4 +697,5 @@ if nixCats('eyecandy') and nixCats('lsp') then
 			}
 		end,
 	})
+	require('vim._extui').enable {}
 end
