@@ -88,7 +88,8 @@ local function get_tabline()
 	for i, info in ipairs(tab_info) do
 		local display = ""
 		local is_active = info.tabid == cur_tab
-		local active_hl = is_active and "%#TabLineSel#" or "%#TabLine#"
+		-- local active_hl = is_active and "%#TabLineSel#" or "%#TabLine#"
+		local active_hl = "%#TabLine#"
 
 		-- Start tab segment
 		s = s .. active_hl .. " "

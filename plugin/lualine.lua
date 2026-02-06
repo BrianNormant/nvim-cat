@@ -68,24 +68,28 @@ require('lze').load {{
 			["r?"]   = mk_mode("CONFIRM"),
 		}
 
-		-- We want to keep a very simple theme
-		local melange = require 'lualine.themes.melange'
-		melange.normal.a = melange.normal.c
-		melange.normal.b = melange.normal.c
-		melange.normal.a.bg = "#3C3836"
-		melange.normal.b.bg = "#3C3836"
-		melange.normal.c.bg = "#3C3836"
+		local theme
+		if nixCats('melange') then
+			theme = require 'lualine.themes.melange'
+		else
+			theme = require 'lualine.themes.gruvbox'
+		end
+		theme.normal.a = theme.normal.c
+		theme.normal.b = theme.normal.c
+		theme.normal.a.bg = "#3C3836"
+		theme.normal.b.bg = "#3C3836"
+		theme.normal.c.bg = "#3C3836"
 
-		melange.insert = melange.normal
-		melange.replace = melange.normal
-		melange.command = melange.normal
-		melange.terminal = melange.normal
-		melange.visual = melange.normal
+		theme.insert = theme.normal
+		theme.replace = theme.normal
+		theme.command = theme.normal
+		theme.terminal = theme.normal
+		theme.visual = theme.normal
 
 		require('lualine').setup {
 			options = {
 				icons_enabled = false,
-				theme = melange,
+				theme = theme,
 				component_separators = { left = ' ', right = ' '},
 				section_separators = { left = ' ', right = ' '},
 				disabled_filetypes = {
