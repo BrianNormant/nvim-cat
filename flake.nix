@@ -52,6 +52,7 @@
 					melange-nvim
 				];
 				builtin = with pkgs.vimPlugins; [
+					nvim-nio
 					mini-nvim
 					auto-hlsearch-nvim
 					nvim-spider
@@ -70,10 +71,10 @@
 					nvim-lint
 				];
 				format = with pkgs.vimPlugins; [
-					conform
+					conform-nvim
 				];
 				runner = with pkgs.vimPlugins; [
-					overseer
+					overseer-nvim
 				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
@@ -108,6 +109,8 @@
 				];
 				nix = with pkgs; [
 					nixd
+					alejandra
+					statix
 				];
 				java = with pkgs; [
 					jdk21_headless
@@ -173,12 +176,15 @@
 					suffix-LD = true;
 				};
 				categories = {
-					melange = true;
+					melange = false;
 					builtin = true;
 					treesitter = true;
 					leap = true;
 					lsp = true;
 					dap = true;
+					lint = false;
+					format = true;
+					runner = true;
 					lua = true;
 					java = true;
 					jdk = {
