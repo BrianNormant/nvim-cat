@@ -8,6 +8,9 @@ vim.api.nvim_create_autocmd(
 			highlight clear SpellBad
 			highlight clear SpellLocal
 			highlight clear SpellRare
+			" Tweak treesitter highlighs to have less "color soup"
+			highlight clear @variable
+			highlight clear @variable.member
 			" highlight! link Search PmenuSel
 			" highlight! link IncSearch PmenuSel
 			" highlight! link CurSearch FloatShadow
@@ -631,7 +634,6 @@ if nixCats('git') then
 			require('codediff').setup {}
 		end,
 	}}
-	-- require('gitgraph').setup {}
 end
 
 -- QuickFix list

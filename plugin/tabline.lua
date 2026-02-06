@@ -103,6 +103,8 @@ local function get_tabline()
 		local bt = info.buftype
 		if path == "" and ft == "" then
 			display = "[No Name]"
+		elseif bt == "terminal" then
+			display = "[Terminal]"
 		elseif path == "" then
 			display = "[New]"
 		elseif ft == "fugitive" then

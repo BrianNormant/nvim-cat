@@ -174,7 +174,7 @@
 					suffix-LD = true;
 				};
 				categories = {
-					melange = true;
+					melange = false;
 					builtin = true;
 					treesitter = true;
 					leap = true;

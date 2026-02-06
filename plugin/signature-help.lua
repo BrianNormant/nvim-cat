@@ -9,7 +9,7 @@ if nixCats('lsp') then
 	  local params = vim.lsp.util.make_position_params(0, 'utf-8')
 	  local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
 
-	  -- Filter clients that support signatureHelp
+	  -- Filter clients which support signatureHelp
 	  local signature_clients = {}
 	  for _, client in ipairs(clients) do
 		if client.server_capabilities.signatureHelpProvider then
