@@ -15,6 +15,8 @@ vim.api.nvim_create_autocmd(
 			" highlight! link IncSearch PmenuSel
 			" highlight! link CurSearch FloatShadow
 			" highlight Substitute guibg=#545454
+
+			highlight! link QuickFixLine CursorLine
 			]]
 			if nixCats('melange') then
 				vim.cmd [[
@@ -160,12 +162,12 @@ vim.api.nvim_create_user_command('Copen', function()
 end, {})
 
 -- =================================[ LSP ]=====================================
+
+vim.lsp.semantic_tokens.enable(false)
+
 if nixCats('lsp') and nixCats('builtin') then
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(args)
-			local client = vim.lsp.get_client_by_id(args.data.client_id)
-			client.server_capabilities.semanticTokensProvider = nil
-
 			local set = function(m, lhs, rhs)
 				vim.keymap.set(m, lhs, rhs, { buffer = true })
 			end
