@@ -146,7 +146,7 @@
 					sibling-swap-nvim
 					iswap-nvim
 				];
-				lua = with pkgs.vimPlugins; [
+				luaft = with pkgs.vimPlugins; [
 					lazydev-nvim
 				];
 				java = with pkgs.vimPlugins; [
@@ -186,7 +186,7 @@
 					lint = false;
 					format = true;
 					runner = true;
-					lua = true;
+					luaft = true;
 					java = true;
 					jdk = {
 						jdk21 = pkgs.jdk21_headless;
