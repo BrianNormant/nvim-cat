@@ -701,5 +701,7 @@ if nixCats('eyecandy') and nixCats('lsp') then
 			}
 		end,
 	})
-	require('vim._extui').enable {}
+	-- This might conflict with vim fugitive,
+	-- And or create weird slowdown
+	-- require('vim._extui').enable {}
 end
