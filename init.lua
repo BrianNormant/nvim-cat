@@ -376,6 +376,8 @@ if nixCats('treesitter') then
 	vim.api.nvim_create_autocmd('BufReadPre', {
 		group = vim.api.nvim_create_augroup('TSConfig', {}),
 		callback = function()
+			if _G.treesitter_setup then return end
+			_G.treesitter_setup = true
 			vim.cmd.packadd 'nvim-treesitter'
 			vim.cmd.packadd 'nvim-treesitter-legacy'
 			vim.cmd.packadd 'treesj'
@@ -430,6 +432,8 @@ end
 if nixCats('builtin') and nixCats('ui') then
 	vim.api.nvim_create_autocmd("BufReadPre", {
 		callback = function()
+			if _G.fold_setup then return end
+			_G.fold_setup = true
 			vim.cmd.packadd 'nvim-origami'
 			require('origami').setup {}
 			vim.opt.foldlevelstart = 99
@@ -713,6 +717,8 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	vim.api.nvim_create_autocmd('LspAttach', {
 		group = vim.api.nvim_create_augroup('LspAttach_Signature', {}),
 		callback = function()
+			if _G.signature_setup then return end
+			_G.signature_setup = true
 			vim.cmd.packadd 'lsp_signature.nvim'
 			require('lsp_signature').setup {
 				floating_window = false,
