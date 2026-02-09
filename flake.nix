@@ -52,6 +52,7 @@
 					melange-nvim
 				];
 				builtin = with pkgs.vimPlugins; [
+					vim-repeat
 					nvim-nio
 					mini-nvim
 					auto-hlsearch-nvim

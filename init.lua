@@ -189,6 +189,32 @@ if nixCats('lsp') and nixCats('builtin') then
 		end,
 	});
 end
+
+-- From vim-unimpaired, by tpope
+vim.cmd [[
+function! s:BlankUp() abort
+  let cmd = 'put!=repeat(nr2char(10), v:count1)|silent '']+'
+  if &modifiable
+    let cmd .= '|silent! call repeat#set("\<Plug>(unimpaired-blank-up)", v:count1)'
+  endif
+  return cmd
+endfunction
+
+function! s:BlankDown() abort
+  let cmd = 'put =repeat(nr2char(10), v:count1)|silent ''[-'
+  if &modifiable
+    let cmd .= '|silent! call repeat#set("\<Plug>(unimpaired-blank-down)", v:count1)'
+  endif
+  return cmd
+endfunction
+
+nnoremap <silent> <Plug>(unimpaired-blank-up)   :<C-U>exe <SID>BlankUp()<CR>
+nnoremap <silent> <Plug>(unimpaired-blank-down) :<C-U>exe <SID>BlankDown()<CR>
+]]
+
+vim.keymap.set("n", "[q", "<plug>(unimpaired-blank-up)")
+vim.keymap.set("n", "]q", "<plug>(unimpaired-blank-down)")
+
 -- ================================[ Extras ]===================================
 -- stuff that are nice (event required imo) to have but require external plugins
 -- the generale nature of those plugins is to extend neovim core functionnality
