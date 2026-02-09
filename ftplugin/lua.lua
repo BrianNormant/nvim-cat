@@ -1,4 +1,4 @@
-if nixCats('lua') and nixCats('lsp') then
+if nixCats('lua') and nixCats('lsp') and not _G.lua_loaded then
 	vim.cmd.packadd('lazydev.nvim')
 	require('lazydev').setup {
 		library = {
@@ -46,4 +46,5 @@ if nixCats('lua') and nixCats('lsp') then
 	end
 
 	vim.lsp.enable("lua_ls")
+	_G.lua_loaded = true
 end

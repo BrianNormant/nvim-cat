@@ -1,4 +1,4 @@
-if nixCats('java') and nixCats('lsp') then
+if nixCats('java') and nixCats('lsp') and not _G.java_loaded then
 	vim.cmd.packadd "vimplugin-spring-boot"
 	vim.cmd.packadd "nvim-java-core"
 	vim.cmd.packadd "nvim-java-dap"
@@ -96,4 +96,5 @@ if nixCats('java') and nixCats('lsp') then
 		},
 	})
 	vim.lsp.enable('jdtls')
+	_G.java_loaded = true
 end
