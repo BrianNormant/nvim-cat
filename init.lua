@@ -83,7 +83,6 @@ vim.opt.spelllang = {
 vim.opt.spelloptions = {
 	"camel",
 }
-vim.opt.errorformat:append("%f")
 
 -- Highlight on yank
 vim.cmd [[
@@ -370,6 +369,54 @@ if nixCats('builtin') then
 			{}
 		)
 	end
+end
+
+-- ================================[ Runner ]===================================
+if nixCats("runner") then
+	require('overseer').setup {}
+
+	-- Restart last task, even if still running
+	vim.api.nvim_create_user_command("OverseerRerun", function()
+		local overseer = require("overseer")
+		local task_list = require("overseer.task_list")
+		local tasks = overseer.list_tasks({ status = {
+			overseer.STATUS.SUCCESS,
+			overseer.STATUS.FAILURE,
+			overseer.STATUS.CANCELED,
+			overseer.STATUS.RUNNING,
+		}, sort = task_list.sort_newest_first })
+		if vim.tbl_isempty(tasks) then
+			vim.notify("No tasks found", vim.log.levels.WARN)
+		else
+			local most_recent = tasks[1]
+			overseer.run_action(most_recent, "restart")
+		end
+	end, {})
+	
+	vim.api.nvim_create_user_command("Make", function(params)
+			-- Insert args at the '$*' in the makeprg
+			local cmd, num_subs = vim.o.makeprg:gsub("%$%*", params.args)
+			if num_subs == 0 then
+				cmd = cmd .. " " .. params.args
+			end
+			local task = require("overseer").new_task({
+				cmd = vim.fn.expandcmd(cmd),
+				components = {
+					{ "on_output_quickfix", open = not params.bang, open_height = 8 },
+					"default",
+				},
+			})
+			task:start()
+		end, {
+		desc = "Run your makeprg as an Overseer task",
+		nargs = "*",
+		bang = true,
+	})
+
+	vim.cmd.cnoreabbrev "OS OverseerShell"
+	vim.keymap.set("n", "<F1>", "<cmd>OverseerToggle!<cr>")
+	vim.keymap.set("n", "<F2>", "<cmd>OverseerRun<cr>")
+	vim.keymap.set("n", "<F3>", "<cmd>OverseerRerun<cr>")
 end
 
 ---------------------------------[ treesitter ]---------------------------------
