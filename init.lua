@@ -83,6 +83,7 @@ vim.opt.spelllang = {
 vim.opt.spelloptions = {
 	"camel",
 }
+vim.opt.errorformat:append("%f")
 
 -- Highlight on yank
 vim.cmd [[
@@ -671,7 +672,7 @@ if nixCats('git') then
 	vim.keymap.set("n", "[h",         function() signs.nav_hunk('prev') end)
 	vim.keymap.set("n", "<leader>hs", function() signs.stage_hunk()     end)
 	vim.keymap.set("n", "<leader>hr", function() signs.reset_hunk()     end)
-	vim.keymap.set("n", "<leader>hh", function() signs.stage_hunk()     end)
+	vim.keymap.set("n", "<leader>hh", function() signs.preview_hunk()     end)
 	vim.keymap.set("n", "<leader>hb", function() signs.blame_line()     end)
 	vim.keymap.set("n", "<leaedr>hB", function() signs.blame()          end)
 
