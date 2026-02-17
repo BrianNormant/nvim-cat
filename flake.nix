@@ -37,9 +37,30 @@
 			inherit system;
 			overlays = [
 				inputs.neovim-nightly-overlay.overlays.default
-					inputs.nix-vscode-extensions.overlays.default
-					melangeOverlay
+				inputs.nix-vscode-extensions.overlays.default
+				melangeOverlay
 			];
+		};
+		markdown-preview-nvim = pkgs.vimUtils.buildVimPlugin rec {
+			name = "markdown-preview-nvim";
+			version = "1.3.0";
+			src = pkgs.fetchFromGitHub {
+				owner = "selimacerbas";
+				repo = "markdown-preview.nvim";
+				rev = "v${version}";
+				hash = "sha256-Dp49Ogqs2+xClp3+XStyvcbe5I51oD7YtobJYZ/aZBU=";
+			};
+			buildInputs = [ live-server-nvim ];
+		};
+		live-server-nvim = pkgs.vimUtils.buildVimPlugin rec {
+			name = "live-server-nvim";
+			version = "1.1.0";
+			src = pkgs.fetchFromGitHub {
+				owner = "selimacerbas";
+				repo = "live-server.nvim";
+				rev = "v${version}";
+				hash = "sha256-wUAphy8qi+kx1S0V8dbHQGgDhkCfrLPH+oWkDZ1yMjE=";
+			};
 		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
@@ -158,6 +179,10 @@
 					nvim-java-dap
 					spring-boot
 				];
+				markdown = with pkgs.vimPlugins; [
+					markdown-preview-nvim
+					live-server-nvim
+				];
 			};
 			environmentVariables = {
 				git = {
@@ -189,6 +214,7 @@
 					runner = true;
 					luaft = true;
 					java = true;
+					markdown = true;
 					jdk = {
 						jdk21 = pkgs.jdk21_headless;
 						jdk25 = pkgs.jdk25_headless;
