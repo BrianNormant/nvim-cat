@@ -77,6 +77,9 @@
 				runner = with pkgs.vimPlugins; [
 					overseer-nvim
 				];
+				test = with pkgs.vimPlugins; [
+					nvim-neotest
+				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
 					gitsigns-nvim
