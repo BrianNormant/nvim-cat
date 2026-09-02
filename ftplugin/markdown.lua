@@ -1,3 +1,5 @@
+if not nixCats('markdown') then return end
+
 local lze = require('lze')
 
 
