@@ -740,6 +740,39 @@ end
 -- QuickFix list
 vim.cmd.packadd "cfilter"
 
+------------------------------------[ AI ]--------------------------------------
+
+if nixCats('ai') then
+	require('lze').load {{
+		'codecompanion.nvim',
+		event = "DeferredUIEnter",
+		after = function()
+			vim.env.OLLAMA_HOST = "http://ggkbrian.com:11434"
+			require('codecompanion').setup {
+				interactions = {
+					chat = {
+						adapter = "ollama",
+						model = "qwen3.8:27b"
+					},
+					inline = {
+						adapter = "ollama",
+						model = "qwen3.8:27b"
+					},
+					completion = {
+						adapter = "ollama",
+						model = "qwen3.8:27b"
+					},
+					background = {
+						adapter = "ollama",
+						model = "qwen3.8:27b"
+					},
+				}
+			}
+		end
+	}}
+end
+
+
 -- ##############################[ Eye Candy ]##################################
 if nixCats('eyecandy') and nixCats('lsp') then
 	require('lze').load {{

@@ -106,7 +106,7 @@
 					tabby-nvim
 					lualine-nvim
 					marks-nvim
-					registers-nvim
+					# registers-nvim
 					hover-nvim
 					quicker-nvim
 				];
@@ -183,6 +183,9 @@
 					markdown-preview-nvim
 					live-server-nvim
 				];
+				ai = with pkgs.vimPlugins; [
+					codecompanion-nvim
+				];
 			};
 			environmentVariables = {
 				git = {
@@ -225,6 +228,7 @@
 					ui = true;
 					eyecandy = true;
 					debug = true;
+					ai = true;
 				};
 				extra = {
 					nixdExtras.nixpkgs = ''import ${pkgs.path}'';
