@@ -747,8 +747,31 @@ if nixCats('ai') then
 		'codecompanion.nvim',
 		event = "DeferredUIEnter",
 		after = function()
-			vim.env.OLLAMA_HOST = "http://ggkbrian.com:11434"
+			local token = vim.fn.readfile('/run/agenix/ollama-nginx-token')[1]
 			require('codecompanion').setup {
+				adapters = {
+					http = {
+						ollama = function()
+							return require("codecompanion.adapters").extend("ollama", {
+								env = {
+									url = "https://ollama.ggkbrian.com",
+								},
+								headers = {
+									["Content-Type"] = "application/json",
+									["Authorization"] = "Basic " .. vim.base64.encode("ollama:" .. token),
+								},
+								parameters = {
+									sync = true,
+								},
+								schema = {
+									model = {
+										default = "qwen3.8:27b",
+									},
+								},
+							})
+						end,
+					},
+				},
 				interactions = {
 					chat = {
 						adapter = "ollama",
