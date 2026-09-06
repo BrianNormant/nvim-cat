@@ -530,8 +530,17 @@ end
 -- text/code editing
 
 -----------------------------------[ Files ]------------------------------------
-require('mini.files').setup {}
-vim.keymap.set('n', '<leader>o', MiniFiles.open)
+if nixCats('file') then
+	require('oil').setup {}
+	vim.keymap.set('n', '<leader>o', '<cmd>Oil<cr>')
+	vim.keymap.set('n', '<leader>O', function() require('oil').open_float() end)
+else
+	require('mini.files').setup {}
+	vim.keymap.set('n', '<leader>o', MiniFiles.open)
+	vim.keymap.set('n', '<leader>O', function()
+		MiniFiles.open(vim.api.nvim_buf_get_name(0))
+	end)
+end
 
 
 ------------------------------------[ Dap ]-------------------------------------
@@ -693,6 +702,7 @@ elseif nixCats('builtin') then
 	vim.keymap.set('n', "<leader>fo",       MiniExtra.pickers.oldfiles)
 	vim.keymap.set('n', "<leader>fh",       MiniPick.builtin.help)
 	vim.keymap.set('n', "<leader>fk",       MiniExtra.pickers.manpages)
+	vim.keymap.set('n', "<leader>fr",       MiniExtra.pickers.registers)
 	vim.keymap.set('n', "z=",               MiniExtra.pickers.spellsuggest)
 	vim.keymap.set('n', "m/",               MiniExtra.pickers.marks)
 end
@@ -792,6 +802,46 @@ if nixCats('ai') then
 				}
 			}
 		end
+	}}
+	require('lze').load {{
+		'minuet-ai.nvim',
+		event = "DeferredUIEnter",
+		after = function()
+			require('minuet').setup {
+				virtualtext = {
+					auto_trigger_ft = { "c" },
+					keymap = {
+						-- accept whole completion
+						accept = '<A-a>',
+						-- accept one line
+						accept_line = '<A-A>',
+						-- accept n lines (prompts for number)
+						-- e.g. "A-z 2 CR" will accept 2 lines
+						accept_n_lines = '<A-z>',
+						-- Cycle to prev completion item, or manually invoke completion
+						prev = '<A-[>',
+						-- Cycle to next completion item, or manually invoke completion
+						next = '<A-]>',
+						dismiss = '<A-e>',
+					},
+				},
+				
+				provider = 'openai_fim_compatible',
+				provider_options = {
+					openai_fim_compatible = {
+						model = 'qwen2.5-coder:3b',
+						end_point = 'http://127.0.0.1:11434/v1/completions',
+						api_key = 'TERM',
+						name = 'Ollama',
+						stream = true,
+						optional = {
+							max_tokens = 256,
+							stop = { '\n\n' },
+						},
+					}
+				}
+			}
+		end,
 	}}
 end
 

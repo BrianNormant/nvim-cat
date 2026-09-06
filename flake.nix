@@ -7,10 +7,6 @@
 	inputs = {
 		nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 		nixCats.url = "github:BirdeeHub/nixCats-nvim";
-		# For 0.12,
-		neovim-nightly-overlay = {
-			url = "github:nix-community/neovim-nightly-overlay";
-		};
 		nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
 	};
 
@@ -36,7 +32,6 @@
 		pkgs = import nixpkgs {
 			inherit system;
 			overlays = [
-				inputs.neovim-nightly-overlay.overlays.default
 				inputs.nix-vscode-extensions.overlays.default
 				melangeOverlay
 			];
@@ -80,6 +75,7 @@
 					nvim-spider
 					lze
 				];
+				file = with pkgs.vimPlugins; [oil-nvim];
 				leap = with pkgs.vimPlugins; [leap-nvim];
 				lsp = with pkgs.vimPlugins; [
 					nvim-lspconfig
@@ -97,9 +93,6 @@
 				];
 				runner = with pkgs.vimPlugins; [
 					overseer-nvim
-				];
-				test = with pkgs.vimPlugins; [
-					nvim-neotest
 				];
 				git = with pkgs.vimPlugins; [
 					vim-fugitive
@@ -188,6 +181,7 @@
 				];
 				ai = with pkgs.vimPlugins; [
 					codecompanion-nvim
+					minuet-ai-nvim
 				];
 			};
 			environmentVariables = {
@@ -216,6 +210,7 @@
 					lsp = true;
 					dap = true;
 					lint = false;
+					file = true;
 					format = true;
 					runner = true;
 					luaft = true;
@@ -243,6 +238,7 @@
 				categories = {
 					melange = true;
 					builtin = true;
+					file = true;
 				};
 			};
 			vi = {...}: {
