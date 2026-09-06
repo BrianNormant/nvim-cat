@@ -86,6 +86,68 @@ require('lze').load {{
 		theme.terminal = theme.normal
 		theme.visual = theme.normal
 
+		local xgroup = {}
+		if nixCats('ai') then
+			-- codecompanion
+			local cc = require('lualine.component'):extend()
+
+			cc.processing = false
+			cc.spinner_index = 1
+
+			local spinner_symbols = {
+				"⠋",
+				"⠙",
+				"⠹",
+				"⠸",
+				"⠼",
+				"⠴",
+				"⠦",
+				"⠧",
+				"⠇",
+				"⠏",
+			}
+			local spinner_symbols_len = 10
+
+			-- Initializer
+			function cc:init(options)
+				cc.super.init(self, options)
+
+				local group = vim.api.nvim_create_augroup("CodeCompanionHooks", {})
+
+				vim.api.nvim_create_autocmd({ "User" }, {
+					pattern = "CodeCompanionRequest*",
+					group = group,
+					callback = function(request)
+						if request.match == "CodeCompanionRequestStarted" then
+							self.processing = true
+						elseif request.match == "CodeCompanionRequestFinished" then
+							self.processing = false
+						end
+					end,
+				})
+			end
+
+			-- Function that runs every time statusline is updated
+			function cc:update_status()
+				if self.processing then
+					self.spinner_index = (self.spinner_index % spinner_symbols_len) + 1
+					return spinner_symbols[self.spinner_index]
+				else
+					return nil
+				end
+			end
+
+			xgroup = {
+				{ function() return require 'minuet.lualine' end },
+				cc
+			}
+		end
+
+		local ygroup = {'filetype'}
+		if nixCats('runner') then
+			ygroup[2] = 'overseer'
+		end
+
 		require('lualine').setup {
 			options = {
 				icons_enabled = false,
@@ -127,8 +189,8 @@ require('lze').load {{
 				},
 				lualine_b = {'branch', 'diff', 'diagnostics'},
 				lualine_c = {'filename'},
-				lualine_x = {'filetype'},
-				lualine_y = {''},
+				lualine_x = xgroup,
+				lualine_y = ygroup,
 				lualine_z = {'location'}
 			},
 		}
