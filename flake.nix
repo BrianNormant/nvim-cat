@@ -183,6 +183,9 @@
 					codecompanion-nvim
 					minuet-ai-nvim
 				];
+				repl = with pkgs.vimPlugins; [
+					sniprun
+				];
 			};
 			environmentVariables = {
 				git = {
@@ -227,6 +230,7 @@
 					eyecandy = true;
 					debug = true;
 					ai = true;
+					repl = true;
 				};
 				extra = {
 					nixdExtras.nixpkgs = ''import ${pkgs.path}'';

@@ -371,6 +371,34 @@ if nixCats('builtin') then
 	end
 end
 
+-- =================================[ REPL ]====================================
+if nixCats("repl") then
+	require("lze").load {{
+		'sniprun',
+		filetype = { "racket", "zsh" },
+		after = function()
+			require('sniprun').setup {
+				interpreter_options = {
+					Generic = {
+						RacketCfg = {
+							supported_filetypes = { "racket" },
+							extension = '.rkt',
+							interpreter = "racket",
+							boilerplate_pre = "#lang racket"
+						},
+						ZSHCfg = {
+							supported_filetypes = { "zsh" },
+							extension = '.zsh',
+							interpreter = 'zsh',
+						}
+					}
+				}
+			}
+		end
+	}}
+end
+
+
 -- ================================[ Runner ]===================================
 if nixCats("runner") then
 	require('overseer').setup {}
