@@ -789,21 +789,28 @@ if nixCats('ai') then
 			require('codecompanion').setup {
 				adapters = {
 					http = {
-						ollama = function()
-							return require("codecompanion.adapters").extend("ollama", {
+						["llama.cpp"] = function()
+							return require("codecompanion.adapters").extend("openai_compatible", {
 								env = {
-									url = "https://ollama.ggkbrian.com",
+									url = "http://127.0.0.1:11434", -- replace with your llama.cpp instance
+									api_key = "TERM",
+									chat_url = "/v1/chat/completions",
 								},
-								headers = {
-									["Content-Type"] = "application/json",
-									["Authorization"] = "Basic " .. vim.base64.encode("ollama:" .. token),
-								},
-								parameters = {
-									sync = true,
+								handlers = {
+									parse_message_meta = function(self, data)
+										local extra = data.extra
+										if extra and extra.reasoning_content then
+											data.output.reasoning = { content = extra.reasoning_content }
+											if data.output.content == "" then
+												data.output.content = nil
+											end
+										end
+										return data
+									end,
 								},
 								schema = {
 									model = {
-										default = "qwen3.8:27b",
+										default = "Qwen3.8",
 									},
 								},
 							})
@@ -812,20 +819,20 @@ if nixCats('ai') then
 				},
 				interactions = {
 					chat = {
-						adapter = "ollama",
-						model = "qwen3.8:27b"
+						adapter = "llama.cpp",
+						model = "Qwen3.8"
 					},
 					inline = {
-						adapter = "ollama",
-						model = "qwen3.8:27b"
+						adapter = "llama.cpp",
+						model = "Qwen3.8"
 					},
 					completion = {
-						adapter = "ollama",
-						model = "qwen3.8:27b"
+						adapter = "llama.cpp",
+						model = "QwenCoder"
 					},
 					background = {
-						adapter = "ollama",
-						model = "qwen3.8:27b"
+						adapter = "llama.cpp",
+						model = "Qwen3.8"
 					},
 				}
 			}
@@ -842,16 +849,16 @@ if nixCats('ai') then
 			nc:close()
 
 			if status == 0 then
-				vim.notify("[ollama] Port 11434 is already in use — skipping tunnel.")
+				vim.notify("[llama-server] Port 11434 is already in use — skipping tunnel.")
 			else
-				vim.notify("[ollama] Port 11434 not listening. Opening SSH tunnel…")
+				vim.notify("[llama-server] Port 11434 not listening. Opening SSH tunnel…")
 				vim.system({
 					"ssh",  "-f",  "-N",  "-o",  "ExitOnForwardFailure=yes",  "-L",  "11434:127.0.0.1:11434",  "BrianNixDesktopI", 
 				}, {}, function(obj)
 					if  obj.code then
-						vim.notify("[ollama] Tunnel ready — Ollama reachable at http://127.0.0.1:11434")
+						vim.notify("[llama-server] Tunnel ready — Ollama reachable at http://127.0.0.1:11434")
 					else
-						vim.notify("[ollama] Failed to open tunnel.")
+						vim.notify("[llama-server] Failed to open tunnel.")
 					end
 				end )
 			end
@@ -878,10 +885,10 @@ if nixCats('ai') then
 				provider = 'openai_fim_compatible',
 				provider_options = {
 					openai_fim_compatible = {
-						model = 'qwen2.5-coder:3b',
+						model = 'QwenCoder',
 						end_point = 'http://127.0.0.1:11434/v1/completions',
 						api_key = 'TERM',
-						name = 'Ollama',
+						name = 'llama-server',
 						stream = true,
 						optional = {
 							max_tokens = 256,
