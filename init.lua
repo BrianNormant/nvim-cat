@@ -835,9 +835,30 @@ if nixCats('ai') then
 		'minuet-ai.nvim',
 		event = "DeferredUIEnter",
 		after = function()
+			-- Check if Ollama is already listening on 11434, otherwise open an SSH tunnel.
+			-- Quick TCP check: nc -z returns 0 if the port accepts connections
+			local nc = io.popen('nc -z 127.0.0.1 11434 2>/dev/null; echo $?')
+			local status = tonumber(nc:read("*a"):match("(%d+)%s*$")) or 1
+			nc:close()
+
+			if status == 0 then
+				vim.notify("[ollama] Port 11434 is already in use — skipping tunnel.")
+			else
+				vim.notify("[ollama] Port 11434 not listening. Opening SSH tunnel…")
+				vim.system({
+					"ssh",  "-f",  "-N",  "-o",  "ExitOnForwardFailure=yes",  "-L",  "11434:127.0.0.1:11434",  "BrianNixDesktopI", 
+				}, {}, function(obj)
+					if  obj.code then
+						vim.notify("[ollama] Tunnel ready — Ollama reachable at http://127.0.0.1:11434")
+					else
+						vim.notify("[ollama] Failed to open tunnel.")
+					end
+				end )
+			end
+
 			require('minuet').setup {
 				virtualtext = {
-					auto_trigger_ft = { "c" },
+					auto_trigger_ft = { "*" },
 					keymap = {
 						-- accept whole completion
 						accept = '<A-a>',
