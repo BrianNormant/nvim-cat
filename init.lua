@@ -890,6 +890,7 @@ if nixCats('ai') then
 						api_key = 'TERM',
 						name = 'llama-server',
 						stream = true,
+						
 						optional = {
 							max_tokens = 256,
 							stop = { '\n\n' },
@@ -900,7 +901,6 @@ if nixCats('ai') then
 		end,
 	}}
 end
-
 
 -- ##############################[ Eye Candy ]##################################
 if nixCats('eyecandy') and nixCats('lsp') then

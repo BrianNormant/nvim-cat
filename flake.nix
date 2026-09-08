@@ -113,6 +113,10 @@
 				debug = with pkgs.vimPlugins; [
 					vim-startuptime
 				];
+				db = with pkgs.vimPlugins; [
+					vim-dadbod
+					vim-dadbod-ui
+				];
 			};
 			lspsAndRuntimeDeps = {
 				builtin = with pkgs; [
@@ -231,6 +235,7 @@
 					debug = true;
 					ai = true;
 					repl = true;
+					db = true;
 				};
 				extra = {
 					nixdExtras.nixpkgs = ''import ${pkgs.path}'';
