@@ -227,6 +227,7 @@
 					luaft = true;
 					java = true;
 					markdown = true;
+					racket = true;
 					jdk = {
 						jdk21 = pkgs.jdk21_headless;
 						jdk25 = pkgs.jdk25_headless;
