@@ -113,7 +113,7 @@
 				debug = with pkgs.vimPlugins; [
 					vim-startuptime
 				];
-				db = with pkgs.vimPlugins; [
+				sql = with pkgs.vimPlugins; [
 					vim-dadbod
 					vim-dadbod-ui
 				];
@@ -139,6 +139,10 @@
 					jdk21_headless
 					jdk25_headless
 					jdt-language-server
+				];
+				sql = with pkgs; [
+					postgres-language-server
+					postgresql
 				];
 			};
 			optionalPlugins = {
@@ -235,7 +239,7 @@
 					debug = true;
 					ai = true;
 					repl = true;
-					db = true;
+					sql = true;
 				};
 				extra = {
 					nixdExtras.nixpkgs = ''import ${pkgs.path}'';
