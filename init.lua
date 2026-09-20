@@ -455,7 +455,6 @@ if nixCats('treesitter') then
 			if _G.treesitter_setup then return end
 			_G.treesitter_setup = true
 			vim.cmd.packadd 'nvim-treesitter'
-			vim.cmd.packadd 'nvim-treesitter-legacy'
 			vim.cmd.packadd 'treesj'
 			local tsj = require('treesj')
 			tsj.setup {}

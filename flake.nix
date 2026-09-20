@@ -159,7 +159,6 @@
 					codediff-nvim
 				];
 				treesitter = with pkgs.vimPlugins; [
-					nvim-treesitter-legacy
 					(nvim-treesitter.withAllGrammars.overrideAttrs {
 						src = pkgs.fetchFromGitHub {
 							owner = "nvim-treesitter";
