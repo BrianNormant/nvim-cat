@@ -191,7 +191,7 @@
 					live-server-nvim
 				];
 				repl = with pkgs.vimPlugins; [
-					sniprun
+					iron-nvim
 				];
 			};
 			environmentVariables = {
