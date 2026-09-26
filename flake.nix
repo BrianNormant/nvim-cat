@@ -117,6 +117,10 @@
 					vim-dadbod
 					vim-dadbod-ui
 				];
+				ai = with pkgs.vimPlugins; [
+					codecompanion-nvim
+					minuet-ai-nvim
+				];
 			};
 			lspsAndRuntimeDeps = {
 				builtin = with pkgs; [
@@ -185,10 +189,6 @@
 				markdown = with pkgs.vimPlugins; [
 					markdown-preview-nvim
 					live-server-nvim
-				];
-				ai = with pkgs.vimPlugins; [
-					codecompanion-nvim
-					minuet-ai-nvim
 				];
 				repl = with pkgs.vimPlugins; [
 					sniprun

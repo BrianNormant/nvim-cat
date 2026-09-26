@@ -780,63 +780,63 @@ vim.cmd.packadd "cfilter"
 ------------------------------------[ AI ]--------------------------------------
 
 if nixCats('ai') then
-	require('lze').load {{
-		'codecompanion.nvim',
-		event = "DeferredUIEnter",
-		after = function()
-			local token = vim.fn.readfile('/run/agenix/ollama-nginx-token')[1]
-			require('codecompanion').setup {
-				adapters = {
-					http = {
-						["llama.cpp"] = function()
-							return require("codecompanion.adapters").extend("openai_compatible", {
-								env = {
-									url = "http://127.0.0.1:11434", -- replace with your llama.cpp instance
-									api_key = "TERM",
-									chat_url = "/v1/chat/completions",
-								},
-								handlers = {
-									parse_message_meta = function(self, data)
-										local extra = data.extra
-										if extra and extra.reasoning_content then
-											data.output.reasoning = { content = extra.reasoning_content }
-											if data.output.content == "" then
-												data.output.content = nil
-											end
-										end
-										return data
-									end,
-								},
-								schema = {
-									model = {
-										default = "Qwen3.8",
-									},
-								},
-							})
-						end,
-					},
+	local token = vim.fn.readfile('/run/agenix/ollama-nginx-token')[1]
+	require('codecompanion').setup {
+		adapters = {
+			http = {
+				["llama.cpp"] = function()
+					return require("codecompanion.adapters").extend("openai_compatible", {
+						env = {
+							url = "http://127.0.0.1:11434", -- replace with your llama.cpp instance
+							api_key = "TERM",
+							chat_url = "/v1/chat/completions",
+						},
+						handlers = {
+							parse_message_meta = function(self, data)
+								local extra = data.extra
+								if extra and extra.reasoning_content then
+									data.output.reasoning = { content = extra.reasoning_content }
+									if data.output.content == "" then
+										data.output.content = nil
+									end
+								end
+								return data
+							end,
+						},
+						schema = {
+							model = {
+								default = "Qwen3.8",
+							},
+						},
+					})
+				end,
+			},
+		},
+		interactions = {
+			chat = {
+				adapter = "llama.cpp",
+				model = "Qwen3.8",
+				opts = {
+					completion_provider = "default",
 				},
-				interactions = {
-					chat = {
-						adapter = "llama.cpp",
-						model = "Qwen3.8"
-					},
-					inline = {
-						adapter = "llama.cpp",
-						model = "Qwen3.8"
-					},
-					completion = {
-						adapter = "llama.cpp",
-						model = "QwenCoder"
-					},
-					background = {
-						adapter = "llama.cpp",
-						model = "Qwen3.8"
-					},
-				}
-			}
-		end
-	}}
+			},
+			inline = {
+				adapter = "llama.cpp",
+				model = "Qwen3.8"
+			},
+			completion = {
+				adapter = "llama.cpp",
+				model = "QwenCoder"
+			},
+			background = {
+				adapter = "llama.cpp",
+				model = "Qwen3.8"
+			},
+		},
+		opts = {
+			language = "French",
+		},
+	}
 	require('lze').load {{
 		'minuet-ai.nvim',
 		event = "DeferredUIEnter",
