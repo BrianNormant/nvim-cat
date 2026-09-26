@@ -2,7 +2,6 @@ if not nixCats('markdown') then return end
 
 local lze = require('lze')
 
-
 lze.load {
 	{
 		'vimplugin-markdown-preview-nvim',
