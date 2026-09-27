@@ -235,10 +235,9 @@ vim.opt.updatetime = 2000
 
 -- ===================[ Operators, Movement & textobject ]======================
 if nixCats('leap') then
-	vim.keymap.set({ "n", "x" }, "s",
-	function()
+	vim.keymap.set({ "n", "x" }, "s", function()
 		return '<Plug>(leap-anywhere)'
-	end,{expr=true})
+	end)
 	vim.keymap.set({ "n", "x" }, "S", function()
 		require('leap.treesitter').select {
 			opts = require('leap.user').with_traversal_keys("s", "S")
