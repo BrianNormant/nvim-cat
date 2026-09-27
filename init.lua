@@ -482,7 +482,9 @@ if nixCats('treesitter') then
 			vim.cmd.packadd 'nvim-treesitter'
 			vim.cmd.packadd 'treesj'
 			local tsj = require('treesj')
-			tsj.setup {}
+			tsj.setup {
+				use_default_keymaps = false,
+			}
 			vim.keymap.set("n", "<c-j>", tsj.toggle)
 
 			vim.cmd.packadd 'vimplugin-sibling-swap.nvim'
