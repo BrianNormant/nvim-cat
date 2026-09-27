@@ -10,6 +10,10 @@ for _, t in pairs(triggers) do
 		vim.opt.completeopt:append "fuzzy"
 		_G.completeswitch = true
 		-- Should check if inside a comment
-		return t .. '<c-x><c-o>'
+		if vim.fn.pumvisible() == 0 then
+			return t .. '<c-x><c-o>'
+		else
+			return t
+		end
 	end, {expr=true, buf=0})
 end
