@@ -379,7 +379,7 @@ end
 if nixCats("repl") then
 	require("lze").load {{
 		'iron.nvim',
-		filetype = { "racket", "zsh", "idris", "sh", "python", "lua" },
+		filetype = { "racket", "idris", "zsh", "sh", "python", "lua" },
 		after = function()
 			local iron = require("iron.core")
 			local view = require("iron.view")
