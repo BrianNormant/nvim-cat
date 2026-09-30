@@ -18,5 +18,5 @@ for _, t in pairs(triggers) do
 	end, {expr=true, buf=0})
 end
 
-vim.keymap.set('v', '<leader>d', ":DB $DBL<cr>")
-vim.keymap.set('n', '<leader>d', "vip:DB $DBL<cr>")
+vim.keymap.set('v', '<leader>d', ":DB $DBL<cr>", {buf=0})
+vim.keymap.set('n', '<leader>d', "vip:DB $DBL<cr>", {buf=0})
