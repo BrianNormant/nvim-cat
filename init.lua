@@ -83,6 +83,11 @@ vim.opt.spelllang = {
 vim.opt.spelloptions = {
 	"camel",
 }
+-- Disable sqlcomplete
+-- Pourquoi c'est activée par default???
+vim.cmd [[
+let g:omni_sql_no_default_maps = 1
+]]
 
 -- Highlight on yank
 vim.cmd [[
