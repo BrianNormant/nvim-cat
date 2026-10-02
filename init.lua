@@ -87,6 +87,7 @@ vim.opt.spelloptions = {
 -- Pourquoi c'est activée par default???
 vim.cmd [[
 let g:omni_sql_no_default_maps = 1
+let g:omni_sql_default_compl_type = 'syntax'
 ]]
 
 -- Highlight on yank
