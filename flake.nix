@@ -128,7 +128,7 @@
 					fd
 					fzf
 				];
-				lua = with pkgs; [
+				luaft = with pkgs; [
 					lua-language-server
 					open-vsx.tomblind.local-lua-debugger-vscode
 					stylua
