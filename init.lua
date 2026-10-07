@@ -132,24 +132,6 @@ vim.keymap.set("n", "<c-p>", function()
 	end
 end)
 
-require('preview')
-
-vim.cmd [[
-" https://caleb89taylor.medium.com/customizing-individual-neovim-windows-4a08f2d02b4e
-" Call method on window enter
-augroup WindowManagement
-	autocmd!
-	autocmd FileType * call Handle_Win_Enter()
-augroup END
-
-" Change highlight group of preview window when open
-function! Handle_Win_Enter()
-	if &previewwindow
-		setlocal winhighlight+=Normal:PmenuSel
-		setlocal winhighlight+=CursorLine:PmenuSel
-	endif
-endfunction
-]]
 ----------------------------------[ Session ]-----------------------------------
 vim.keymap.set("n", "<leader>s", function()
 	-- TODO: ask for confirmation
@@ -769,7 +751,7 @@ end
 
 ------------------------------------[ Git ]-------------------------------------
 if nixCats('git') then
-	vim.keymap.set('n', '<leader>G', '<cmd>tab Git<cr>')
+	vim.keymap.set('n', '<leader>G', '<cmd>tab Git | Git! log -5<cr>')
 	require('gitsigns').setup {
 		-- we want gitsigns to always on the leftmost sign
 		sign_priority = 50,
