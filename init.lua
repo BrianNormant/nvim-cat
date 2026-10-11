@@ -801,6 +801,12 @@ if nixCats('ai') then
 	require('codecompanion').setup {
 		adapters = {
 			http = {
+				-- Open router
+				["openrouter"] = function()
+					return require("codecompanion.adapters").extend("openrouter", {
+						env = { api_key = "OPENROUTER_API_KEY", },
+					})
+				end,
 				["llama.cpp"] = function()
 					return require("codecompanion.adapters").extend("openai_compatible", {
 						env = {
