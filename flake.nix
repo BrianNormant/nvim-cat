@@ -47,6 +47,34 @@
 			};
 			buildInputs = [ live-server-nvim ];
 		};
+		cursortab = (
+			let
+				version = "0.8.0";
+				name = "cursortab";
+				src = pkgs.fetchFromGitHub {
+					owner = "cursortab";
+					repo = "cursortab.nvim";
+					rev = "v${version}";
+					hash = "sha256-Y+q1NnQairgRE4lSbQ7pQn52ncobbRUmG7YuwbilDhY=";
+				};
+				cursortabBinary = pkgs.buildGoModule {
+					version = version;
+					src = src;
+					pname = name;
+					vendorHash = "sha256-4S14Vm2Ju084uxB2Zlku4z5AmIZkNZkQpiNgYrcqIbg=";
+					sourceRoot  = "${src.name}/server";
+				};
+			in
+			pkgs.vimUtils.buildVimPlugin {
+				inherit version; inherit src;
+				name = "${name}-nvim";
+				postInstall = ''
+					mkdir -p $out/bin
+					cp ${cursortabBinary}/bin/cursortab \
+					   $out/server/cursortab
+				'';
+			}
+		);
 		live-server-nvim = pkgs.vimUtils.buildVimPlugin rec {
 			name = "live-server-nvim";
 			version = "1.1.0";
@@ -119,7 +147,7 @@
 				];
 				ai = with pkgs.vimPlugins; [
 					codecompanion-nvim
-					minuet-ai-nvim
+					cursortab
 				];
 			};
 			lspsAndRuntimeDeps = {

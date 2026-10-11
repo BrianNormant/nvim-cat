@@ -36,6 +36,8 @@ else
 	vim.cmd [[colorscheme retrobox]]
 end
 
+
+
 if nixCats('debug') then
 	vim.g.startuptime_exe_path = "/home/brian/.config/nvim-cat/result/bin/nvim"
 end
@@ -853,7 +855,7 @@ if nixCats('ai') then
 		},
 	}
 	require('lze').load {{
-		'minuet-ai.nvim',
+		'cursortab.nvim',
 		event = "DeferredUIEnter",
 		after = function()
 			-- Check if Ollama is already listening on 11434, otherwise open an SSH tunnel.
@@ -877,40 +879,24 @@ if nixCats('ai') then
 				end )
 			end
 
-			require('minuet').setup {
-				virtualtext = {
-					auto_trigger_ft = { "*" },
-					keymap = {
-						-- accept whole completion
-						accept = '<A-a>',
-						-- accept one line
-						accept_line = '<A-A>',
-						-- accept n lines (prompts for number)
-						-- e.g. "A-z 2 CR" will accept 2 lines
-						accept_n_lines = '<A-z>',
-						-- Cycle to prev completion item, or manually invoke completion
-						prev = '<A-[>',
-						-- Cycle to next completion item, or manually invoke completion
-						next = '<A-]>',
-						dismiss = '<A-e>',
-					},
+			-- cursortab
+			require('cursortab').setup {
+				enabled = true,
+				keymaps = {
+					accept = "<A-Enter>",
+					partial_accept = "<A-\\>",
+					trigger = "<C-Space>",
 				},
-				
-				provider = 'openai_fim_compatible',
-				provider_options = {
-					openai_fim_compatible = {
-						model = 'QwenCoder',
-						end_point = 'http://127.0.0.1:11434/v1/completions',
-						api_key = 'TERM',
-						name = 'llama-server',
-						stream = true,
-						
-						optional = {
-							max_tokens = 256,
-							stop = { '\n\n' },
-						},
-					}
-				}
+				provider = {
+					type = "sweep",
+					url = "http://localhost:11434",
+					model = "SweepEdit",
+				},
+				behavior = {
+					enabled_modes = { "insert", "normal" },
+					ignore_paths = { "*.log" },
+					ignore_gitignored = false,
+				},
 			}
 		end,
 	}}
