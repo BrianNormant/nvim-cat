@@ -85,6 +85,9 @@ vim.opt.spelllang = {
 vim.opt.spelloptions = {
 	"camel",
 }
+
+require('scrollEOF').setup()
+
 -- Disable sqlcomplete
 -- Pourquoi c'est activée par default???
 vim.cmd [[
@@ -519,6 +522,7 @@ if nixCats('builtin') and nixCats('ui') then
 		end
 	})
 	require("mini.cursorword").setup()
+	require('helpview').setup {}
 end
 
 if nixCats('builtin') and nixCats('ui') then
@@ -729,14 +733,7 @@ if nixCats('fzflua') then
 
 	-- See https://github.com/junegunn/fzf/issues/1213 for frecency
 elseif nixCats('builtin') then
-	require('mini.pick').setup {
-		mappings = {
-			choose_marked = '<C-q>', -- send selected to qflist
-			mark = '<Tab>',
-			mark_all = '<S-Tab>',
-			toggle_preview = '<C-p>',
-		}
-	}
+	require('mini.pick').setup {}
 	require('mini.extra').setup {}
 	vim.keymap.set('n', "<leader><leader>", MiniPick.builtin.resume)
 	vim.keymap.set('n', "<leader>ff",       MiniPick.builtin.files)
@@ -951,5 +948,5 @@ if nixCats('eyecandy') and nixCats('lsp') then
 	})
 	-- This might conflict with vim fugitive,
 	-- And or create weird slowdown
-	-- require('vim._extui').enable {}
+	-- require('vim._core.ui2').enable {}
 end

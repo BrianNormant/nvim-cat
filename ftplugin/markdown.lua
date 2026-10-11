@@ -23,6 +23,12 @@ if nixCats('markdown') and not _G.markdown_loaded then
 					live_reload = { enable = true},
 				}
 			end
+		},
+		{
+			'markview-nvim',
+			after = function()
+				require('markview').setup {}
+			end,
 		}
 	}
 end

@@ -99,6 +99,16 @@
 				hash = "sha256-IEa5lqlAXekQFqjb+Vjv1k+uZY4De19N9am+nBAXGLk=";
 			};
 		};
+		scrollEOF = pkgs.vimUtils.buildVimPlugin rec {
+			name = "scrollEOF-nvim";
+			version = "1.3.0";
+			src = pkgs.fetchFromGitHub {
+				owner = "Aasim-A";
+				repo = "scrollEOF.nvim";
+				rev = version;
+				hash = "sha256-/raAB+3UlI5vjuq+nq3USKzJPzXDQZbcOOzd5G1Dhb0=";
+			};
+		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
 		categoryDefinitions = {pkgs, ...}: {
@@ -110,6 +120,7 @@
 					melange-nvim
 				];
 				builtin = with pkgs.vimPlugins; [
+					scrollEOF
 					vim-repeat
 					nvim-nio
 					mini-nvim
@@ -147,6 +158,7 @@
 					# registers-nvim
 					hover-nvim
 					quicker-nvim
+					helpview-nvim
 				];
 				eyecandy = with pkgs.vimPlugins; [
 					lspkind-nvim
@@ -162,6 +174,12 @@
 				ai = with pkgs.vimPlugins; [
 					codecompanion-nvim
 					cursortab
+				];
+				regex = with pkgs.vimPlugins; [
+					patterns-nvim
+				];
+				markdown = with pkgs.vimPlugins; [
+					markview-nvim
 				];
 			};
 			lspsAndRuntimeDeps = {
@@ -259,13 +277,14 @@
 				};
 				categories = {
 					melange = false;
+					lint = false;
 					builtin = true;
 					treesitter = true;
 					leap = true;
 					lsp = true;
 					dap = true;
 					rest = true;
-					lint = false;
+					regex = true;
 					file = true;
 					format = true;
 					runner = true;
