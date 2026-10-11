@@ -85,6 +85,20 @@
 				hash = "sha256-wUAphy8qi+kx1S0V8dbHQGgDhkCfrLPH+oWkDZ1yMjE=";
 			};
 		};
+		resty-nvim = pkgs.vimUtils.buildVimPlugin rec {
+			name = "resty-nvim";
+			version = "7825ce6";
+			nativeBuildInputs = with pkgs; [
+				vimPlugins.plenary-nvim
+				vimPlugins.telescope-nvim
+			];
+			src = pkgs.fetchFromGitHub {
+				owner = "lima1909";
+				repo = "resty.nvim";
+				rev = version;
+				hash = "sha256-IEa5lqlAXekQFqjb+Vjv1k+uZY4De19N9am+nBAXGLk=";
+			};
+		};
 		inherit (inputs.nixCats) utils;
 		luaPath = ./.;
 		categoryDefinitions = {pkgs, ...}: {
@@ -181,6 +195,9 @@
 				ui = with pkgs.vimPlugins; [
 					nvim-origami
 				];
+				rest = with pkgs.vimPlugins; [
+					resty-nvim
+				];
 				eyecandy = with pkgs.vimPlugins; [
 					lsp_signature-nvim
 				];
@@ -247,6 +264,7 @@
 					leap = true;
 					lsp = true;
 					dap = true;
+					rest = true;
 					lint = false;
 					file = true;
 					format = true;
