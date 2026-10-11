@@ -12,4 +12,8 @@ if nixCats('rest') and not _G.http_loaded then
 	}
 end
 
+vim.keymap.set("n", "<leader>d", "<cmd>Resty<cr>", {
+	buf=0
+})
+
 vim.cmd "set ft=resty"
