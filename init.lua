@@ -838,6 +838,11 @@ if nixCats('ai') then
 				model = "Qwen3.8",
 				opts = {
 					completion_provider = "default",
+					context_management = {
+						enabled = true,
+						editing = { trigger = 0.65, },
+						compaction = { trigger = 0.85, },
+					},
 				},
 			},
 			inline = {
