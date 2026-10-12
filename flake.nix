@@ -38,12 +38,12 @@
 		};
 		markdown-preview-nvim = pkgs.vimUtils.buildVimPlugin rec {
 			name = "markdown-preview-nvim";
-			version = "1.3.0";
+			version = "2.1.0";
 			src = pkgs.fetchFromGitHub {
 				owner = "selimacerbas";
 				repo = "markdown-preview.nvim";
 				rev = "v${version}";
-				hash = "sha256-Dp49Ogqs2+xClp3+XStyvcbe5I51oD7YtobJYZ/aZBU=";
+				hash = "sha256-V3NRsP7ZGR+6p5wC/lS1nebnPsLevLgT4HWcDO1TKyo=";
 			};
 			buildInputs = [ live-server-nvim ];
 		};
@@ -77,12 +77,12 @@
 		);
 		live-server-nvim = pkgs.vimUtils.buildVimPlugin rec {
 			name = "live-server-nvim";
-			version = "1.1.0";
+			version = "2.0.0";
 			src = pkgs.fetchFromGitHub {
 				owner = "selimacerbas";
 				repo = "live-server.nvim";
 				rev = "v${version}";
-				hash = "sha256-wUAphy8qi+kx1S0V8dbHQGgDhkCfrLPH+oWkDZ1yMjE=";
+				hash = "sha256-XHbCbooxN+29qCQT9XasihZFdYonDaWufFUSNowNdnk=";
 			};
 		};
 		resty-nvim = pkgs.vimUtils.buildVimPlugin rec {
@@ -226,14 +226,7 @@
 					codediff-nvim
 				];
 				treesitter = with pkgs.vimPlugins; [
-					(nvim-treesitter.withAllGrammars.overrideAttrs {
-						src = pkgs.fetchFromGitHub {
-							owner = "nvim-treesitter";
-							repo = "nvim-treesitter";
-							rev = "master"; # Until Iswap updates
-							hash = "sha256-CVs9FTdg3oKtRjz2YqwkMr0W5qYLGfVyxyhE3qnGYbI=";
-						};
-					})
+					nvim-treesitter.withAllGrammars
 					treesj
 					sibling-swap-nvim
 					iswap-nvim
@@ -267,7 +260,7 @@
 			};
 		};
 
-		packagesDefinitions = rec {
+		packagesDefinitions = {
 			nvim = {...}: {
 				settings = {
 					wrapRc = "NIXCAT_DEBUG";

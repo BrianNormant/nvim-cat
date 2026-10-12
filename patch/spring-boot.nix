@@ -7,7 +7,7 @@ in  vimUtils.buildVimPlugin {
 	src = fetchFromGitHub {
 		owner = "JavaHello";
 		repo = "spring-boot.nvim";
-		rev = "affc5d1";
-		hash = "sha256-/N+jLmL5YC+8Rp7rwRcRF+aFn6bWbiFEsJJ7Q7u8Wq8=";
+		rev = "9880be4";
+		hash = "sha256-+zgi9Jhh5f3kPr5VC2KZ3x7OEXdTao5gQM48y5NlGo4=";
 	};
 }
