@@ -897,7 +897,7 @@ if nixCats('ai') then
 				},
 				provider = {
 					type = "sweep",
-					url = "http://localhost:11434",
+					url = "http://localhost:11435",
 					model = "SweepEdit",
 				},
 				behavior = {
