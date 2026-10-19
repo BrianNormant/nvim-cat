@@ -794,7 +794,8 @@ vim.cmd.packadd "cfilter"
 ------------------------------------[ AI ]--------------------------------------
 
 if nixCats('ai') then
-	local token = vim.fn.readfile('/run/agenix/ollama-nginx-token')[1]
+	local openrouter_token = vim.fn.readfile('/run/agenix/openrouter-token')[1]
+	vim.env.OPENROUTER_API_KEY = openrouter_token
 	require('codecompanion').setup {
 		adapters = {
 			http = {
